@@ -1,0 +1,25 @@
+.DS_Store
+
+# Logs
+*.log
+
+# OS / editor temp files
+*.swp
+*.swo
+*~
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDEs
+.idea/workspace.xml
+.idea/shelf/
+.vscode/
+
