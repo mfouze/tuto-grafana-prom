@@ -4,8 +4,7 @@
       {
         "builtIn": 1,
         "datasource": {
-          "type": "prometheus",
-          "uid": "thanos"
+          "type": "prometheus"
         },
         "enable": true,
         "hide": true,
@@ -29,8 +28,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "editable": true,
       "error": false,
@@ -403,8 +401,7 @@
         "rgba(50, 172, 45, 0.97)"
       ],
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "decimals": 0,
       "editable": true,
@@ -540,8 +537,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "decimals": 1,
       "editable": true,
@@ -902,8 +898,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "editable": true,
       "error": false,
@@ -1104,8 +1099,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "editable": true,
       "error": false,
@@ -1210,8 +1204,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "editable": true,
       "error": false,
@@ -1327,8 +1320,7 @@
           "value": "$__all"
         },
         "datasource": {
-          "type": "prometheus",
-          "uid": "thanos"
+          "type": "prometheus"
         },
         "definition": "",
         "hide": 0,
@@ -1356,8 +1348,7 @@
           "value": "$__all"
         },
         "datasource": {
-          "type": "prometheus",
-          "uid": "thanos"
+          "type": "prometheus"
         },
         "definition": "label_values(pg_stat_database_tup_fetched{instance=~\"$instance\",datname!~\"template.*|postgres\"},datname)",
         "hide": 0,
@@ -1385,8 +1376,7 @@
           "value": "postgres"
         },
         "datasource": {
-          "type": "prometheus",
-          "uid": "thanos"
+          "type": "prometheus"
         },
         "definition": "label_values(pg_up, job)",
         "hide": 0,

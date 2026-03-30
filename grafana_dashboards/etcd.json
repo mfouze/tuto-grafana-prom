@@ -4,8 +4,7 @@
       {
         "builtIn": 1,
         "datasource": {
-          "type": "prometheus",
-          "uid": "thanos"
+          "type": "prometheus"
         },
         "enable": true,
         "hide": true,
@@ -62,8 +61,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -152,8 +150,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -244,8 +241,7 @@
     {
       "cacheTimeout": null,
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "description": "",
       "fieldConfig": {
@@ -772,8 +768,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "description": "",
       "fieldConfig": {
@@ -863,8 +858,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "description": "",
       "fieldConfig": {
@@ -969,8 +963,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -1063,8 +1056,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -1157,8 +1149,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -1251,8 +1242,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -1360,8 +1350,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -1454,8 +1443,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -1551,8 +1539,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -1657,8 +1644,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -1751,8 +1737,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -1857,8 +1842,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -1961,8 +1945,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -2065,8 +2048,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -2164,8 +2146,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -2267,8 +2248,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -2359,8 +2339,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "description": "Abnormally high snapshot duration (snapshot_save_total_duration_seconds) indicates disk issues and might cause the cluster to be unstable.",
       "fieldConfig": {
@@ -2453,8 +2432,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -2571,8 +2549,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -2672,8 +2649,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -2764,8 +2740,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -2858,8 +2833,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "description": "indicates how many proposals are queued to commit. Rising pending proposals suggests there is a high client load or the member cannot commit proposals.",
       "fieldConfig": {
@@ -2952,8 +2926,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "description": "proposals_committed_total records the total number of consensus proposals committed. This gauge should increase over time if the cluster is healthy. Several healthy members of an etcd cluster may have different total committed proposals at once. This discrepancy may be due to recovering from peers after starting, lagging behind the leader, or being the leader and therefore having the most commits. It is important to monitor this metric across all the members in the cluster; a consistently large lag between a single member and its leader indicates that member is slow or unhealthy.\n\nproposals_applied_total records the total number of consensus proposals applied. The etcd server applies every committed proposal asynchronously. The difference between proposals_committed_total and proposals_applied_total should usually be small (within a few thousands even under high load). If the difference between them continues to rise, it indicates that the etcd server is overloaded. This might happen when applying expensive queries like heavy range queries or large txn operations.",
       "fieldConfig": {
@@ -3062,8 +3035,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -3163,8 +3135,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -3278,8 +3249,7 @@
         "allValue": null,
         "current": {},
         "datasource": {
-          "type": "prometheus",
-          "uid": "thanos"
+          "type": "prometheus"
         },
         "definition": "label_values(etcd_cluster_version,job)",
         "description": null,
@@ -3307,8 +3277,7 @@
         "allValue": null,
         "current": {},
         "datasource": {
-          "type": "prometheus",
-          "uid": "thanos"
+          "type": "prometheus"
         },
         "definition": "label_values({job=\"$job\"}, instance)",
         "description": null,

@@ -4,8 +4,7 @@
       {
         "builtIn": 1,
         "datasource": {
-          "type": "prometheus",
-          "uid": "thanos"
+          "type": "prometheus"
         },
         "enable": true,
         "hide": true,
@@ -33,8 +32,7 @@
         "#d44a3a"
       ],
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -127,8 +125,7 @@
         "#d44a3a"
       ],
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -217,8 +214,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "decimals": null,
       "fieldConfig": {
@@ -326,8 +322,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "decimals": null,
       "fieldConfig": {
@@ -435,8 +430,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "decimals": null,
       "fieldConfig": {
@@ -512,7 +506,7 @@
       },
       "yaxes": [
         {
-          "format": "\u00b5s",
+          "format": "µs",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -541,8 +535,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -661,8 +654,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "decimals": 2,
       "fieldConfig": {
@@ -776,8 +768,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -940,8 +931,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "thanos"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -1062,8 +1052,7 @@
         "allValue": null,
         "current": {},
         "datasource": {
-          "type": "prometheus",
-          "uid": "thanos"
+          "type": "prometheus"
         },
         "definition": "",
         "error": null,
@@ -1088,8 +1077,7 @@
         "allValue": null,
         "current": {},
         "datasource": {
-          "type": "prometheus",
-          "uid": "thanos"
+          "type": "prometheus"
         },
         "definition": "",
         "error": null,
@@ -1114,8 +1102,7 @@
         "allValue": null,
         "current": {},
         "datasource": {
-          "type": "prometheus",
-          "uid": "thanos"
+          "type": "prometheus"
         },
         "definition": "",
         "error": null,
@@ -1140,8 +1127,7 @@
         "allValue": null,
         "current": {},
         "datasource": {
-          "type": "prometheus",
-          "uid": "thanos"
+          "type": "prometheus"
         },
         "definition": "",
         "error": null,
