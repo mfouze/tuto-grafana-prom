@@ -1502,14 +1502,14 @@
       "pluginVersion": "8.2.5",
       "targets": [
         {
-          "expr": "rate(etcd_debugging_mvcc_put_total{instance=~\"$instance\",job=~\"Etcd\",cluster=~\"$cluster\",environment=~\"$environment\"}[5m])",
+          "expr": "rate(etcd_mvcc_put_total{instance=~\"$instance\",job=~\"Etcd\",cluster=~\"$cluster\",environment=~\"$environment\"}[5m])",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{ instance }} puts/s",
           "refId": "A"
         },
         {
-          "expr": "rate(etcd_debugging_mvcc_delete_total{instance=~\"$instance\",job=~\"Etcd\",cluster=~\"$cluster\",environment=~\"$environment\"}[5m])",
+          "expr": "rate(etcd_mvcc_delete_total{instance=~\"$instance\",job=~\"Etcd\",cluster=~\"$cluster\",environment=~\"$environment\"}[5m])",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{ instance }} deletes/s",
@@ -1903,7 +1903,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "rate(etcd_disk_wal_fsync_duration_seconds_sum{instance=~\"$instance\",job=~\"Etcd\",cluster=~\"$cluster\",environment=~\"$environment\"}[1m])",
+          "expr": "rate(etcd_disk_wal_fsync_duration_seconds_sum{instance=~\"$instance\",job=~\"Etcd\",cluster=~\"$cluster\",environment=~\"$environment\"}[$__interval])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1913,7 +1913,7 @@
         },
         {
           "exemplar": true,
-          "expr": "rate(etcd_disk_backend_commit_duration_seconds_sum{instance=~\"$instance\",job=~\"Etcd\",cluster=~\"$cluster\",environment=~\"$environment\"}[1m])",
+          "expr": "rate(etcd_disk_backend_commit_duration_seconds_sum{instance=~\"$instance\",job=~\"Etcd\",cluster=~\"$cluster\",environment=~\"$environment\"}[$__interval])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -2308,7 +2308,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "rate(etcd_disk_backend_defrag_duration_seconds_sum{instance=~\"$instance\",job=~\"Etcd\",cluster=~\"$cluster\",environment=~\"$environment\"}[1m])",
+          "expr": "rate(etcd_disk_backend_defrag_duration_seconds_sum{instance=~\"$instance\",job=~\"Etcd\",cluster=~\"$cluster\",environment=~\"$environment\"}[$__interval])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -2400,7 +2400,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(rate(etcd_debugging_snap_save_total_duration_seconds_sum{instance=~\"$instance\",job=~\"Etcd\",cluster=~\"$cluster\",environment=~\"$environment\"}[1m]))",
+          "expr": "sum(rate(etcd_debugging_snap_save_total_duration_seconds_sum{instance=~\"$instance\",job=~\"Etcd\",cluster=~\"$cluster\",environment=~\"$environment\"}[$__interval]))",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -3195,7 +3195,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(rate(etcd_network_client_grpc_received_bytes_total{instance=~\"$instance\",job=~\"Etcd\",cluster=~\"$cluster\",environment=~\"$environment\"}[1m]))",
+          "expr": "sum(rate(etcd_network_client_grpc_received_bytes_total{instance=~\"$instance\",job=~\"Etcd\",cluster=~\"$cluster\",environment=~\"$environment\"}[$__interval]))",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -3205,7 +3205,7 @@
         },
         {
           "exemplar": true,
-          "expr": "sum(rate(etcd_network_client_grpc_sent_bytes_total{instance=~\"$instance\",job=~\"Etcd\",cluster=~\"$cluster\",environment=~\"$environment\"}[1m]))",
+          "expr": "sum(rate(etcd_network_client_grpc_sent_bytes_total{instance=~\"$instance\",job=~\"Etcd\",cluster=~\"$cluster\",environment=~\"$environment\"}[$__interval]))",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
