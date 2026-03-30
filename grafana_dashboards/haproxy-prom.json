@@ -2,7 +2,7 @@
   "id": null,
   "uid": "haproxy-standalone",
   "title": "HAProxy Standalone",
-  "description": "HAProxy monitoring for standalone mode (non-Ingress)",
+  "description": "HAProxy monitoring — backends, proxies, server state (label state).",
   "tags": [
     "haproxy",
     "transactis"
@@ -71,19 +71,6 @@
           "text": "All",
           "value": "$__all"
         }
-      },
-      {
-        "name": "scope",
-        "type": "query",
-        "datasource": {
-          "type": "prometheus"
-        },
-        "label": "Scope (Patroni)",
-        "query": "label_values(patroni_primary, scope)",
-        "refresh": 2,
-        "includeAll": false,
-        "multi": false,
-        "current": {}
       }
     ]
   },
@@ -382,14 +369,14 @@
     },
     {
       "title": "Serveurs UP",
-      "description": "Nombre de serveurs backend avec statut UP (haproxy_server_status == 1).",
+      "description": "Nombre de séries avec label state=\"UP\" à 1 (un serveur peut apparaître sur plusieurs proxies).",
       "type": "stat",
       "datasource": {
         "type": "prometheus"
       },
       "targets": [
         {
-          "expr": "count(haproxy_server_status{proxy=~\"$proxy\",cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"} == 1)",
+          "expr": "sum(haproxy_server_status{proxy=~\"$proxy\",cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\",state=\"UP\"})",
           "legendFormat": "UP",
           "refId": "A"
         }
@@ -435,14 +422,14 @@
     },
     {
       "title": "Serveurs (total)",
-      "description": "Nombre total de serveurs dans le(s) proxy sélectionné(s).",
+      "description": "Nombre de couples (proxy, server) — un même nom de server sur deux proxies compte deux fois.",
       "type": "stat",
       "datasource": {
         "type": "prometheus"
       },
       "targets": [
         {
-          "expr": "count(haproxy_server_status{proxy=~\"$proxy\",cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"})",
+          "expr": "count(sum by (proxy, server) (haproxy_server_status{proxy=~\"$proxy\",cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}))",
           "legendFormat": "total",
           "refId": "A"
         }
@@ -479,8 +466,8 @@
       }
     },
     {
-      "title": "État par serveur (1 = UP, 0 = DOWN)",
-      "description": "Une série par serveur backend : tu dois voir autant de lignes que de nœuds (ex. 1 primaire + 2 réplicas = 3).",
+      "title": "État par serveur (label state)",
+      "description": "Une série par combinaison proxy / server / state. La valeur vaut 1 pour l’état actif.",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus"
@@ -488,14 +475,14 @@
       "targets": [
         {
           "expr": "haproxy_server_status{proxy=~\"$proxy\",cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}",
-          "legendFormat": "{{proxy}} / {{server}}",
+          "legendFormat": "{{proxy}} / {{server}} / {{state}}",
           "refId": "A"
         }
       ],
       "fieldConfig": {
         "defaults": {
           "min": 0,
-          "max": 2,
+          "max": 1,
           "unit": "none",
           "custom": {
             "drawStyle": "line",
@@ -541,145 +528,13 @@
       }
     },
     {
-      "title": "Patroni — nœuds (leader / réplicas)",
-      "description": "Métriques Patroni : le label **name** est le nœud (pas le nom de serveur HAProxy). Les bascules de leader se voient quand la série à 1 change de nœud.",
-      "type": "row",
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 12
-      },
-      "collapsed": false
-    },
-    {
-      "title": "Leader par nœud Patroni (1 = primaire)",
-      "description": "Une ligne par **name**. Exactement une série à 1 : le leader. Bascule = autre nœud passe à 1.",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus"
-      },
-      "targets": [
-        {
-          "expr": "patroni_primary{scope=~\"$scope\"}",
-          "legendFormat": "{{name}}",
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "min": 0,
-          "max": 1,
-          "unit": "none",
-          "custom": {
-            "drawStyle": "line",
-            "lineInterpolation": "stepAfter",
-            "fillOpacity": 30,
-            "showPoints": "never"
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "calcs": [
-            "lastNotNull"
-          ]
-        },
-        "tooltip": {
-          "mode": "multi"
-        }
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 24,
-        "x": 0,
-        "y": 13
-      }
-    },
-    {
-      "title": "Réplicas par nœud Patroni",
-      "description": "**patroni_replica** à 1 pour les nœuds en réplication (hors leader).",
-      "type": "timeseries",
-      "datasource": {
-        "type": "prometheus"
-      },
-      "targets": [
-        {
-          "expr": "patroni_replica{scope=~\"$scope\"}",
-          "legendFormat": "{{name}}",
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "min": 0,
-          "max": 1,
-          "unit": "none",
-          "custom": {
-            "drawStyle": "line",
-            "lineInterpolation": "stepAfter",
-            "fillOpacity": 20,
-            "showPoints": "never"
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "calcs": [
-            "lastNotNull"
-          ]
-        },
-        "tooltip": {
-          "mode": "multi"
-        }
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 24,
-        "x": 0,
-        "y": 20
-      }
-    },
-    {
-      "title": "Leader actuel (nœud Patroni)",
-      "description": "Nœud avec **patroni_primary == 1** (colonne name).",
-      "type": "table",
-      "datasource": {
-        "type": "prometheus"
-      },
-      "targets": [
-        {
-          "expr": "patroni_primary{scope=~\"$scope\"} == 1",
-          "format": "table",
-          "instant": true,
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 24,
-        "x": 0,
-        "y": 28
-      }
-    },
-    {
       "title": "Backend",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 33
+        "y": 12
       },
       "collapsed": false
     },
@@ -715,7 +570,7 @@
         "h": 4,
         "w": 4,
         "x": 0,
-        "y": 34
+        "y": 13
       }
     },
     {
@@ -734,7 +589,7 @@
         "h": 8,
         "w": 10,
         "x": 4,
-        "y": 34
+        "y": 13
       }
     },
     {
@@ -758,7 +613,7 @@
         "h": 8,
         "w": 10,
         "x": 14,
-        "y": 34
+        "y": 13
       }
     },
     {
@@ -769,41 +624,46 @@
       },
       "targets": [
         {
-          "expr": "haproxy_server_status{proxy=~\"$proxy\",cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}",
-          "legendFormat": "{{proxy}} / {{server}}",
+          "expr": "haproxy_server_status{proxy=~\"$proxy\",cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"} == 1",
+          "legendFormat": "",
           "format": "table",
           "instant": true
         }
       ],
       "fieldConfig": {
-        "defaults": {
-          "mappings": [
-            {
-              "type": "value",
-              "options": {
-                "0": {
-                  "text": "DOWN",
-                  "color": "red"
-                },
-                "1": {
-                  "text": "UP",
-                  "color": "green"
-                }
-              }
-            }
-          ]
-        }
+        "defaults": {}
       },
       "gridPos": {
         "h": 6,
         "w": 8,
         "x": 0,
-        "y": 38
-      }
+        "y": 17
+      },
+      "description": "Une ligne par état actif : colonnes **proxy**, **server**, **state** (métrique avec label state : UP, DOWN, DRAIN, etc.).",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "__name__": true,
+              "job": true,
+              "instance": false
+            },
+            "indexByName": {},
+            "renameByName": {
+              "proxy": "Proxy",
+              "server": "Serveur (node)",
+              "state": "État",
+              "Value": "Actif (1)"
+            }
+          }
+        }
+      ]
     },
     {
       "title": "Server Status — historique",
-      "description": "Même métrique en time series : courbes par serveur (proxy / server).",
+      "description": "Historique : une courbe par combinaison proxy / server / state (valeur 0 ou 1).",
       "type": "timeseries",
       "datasource": {
         "type": "prometheus"
@@ -811,14 +671,14 @@
       "targets": [
         {
           "expr": "haproxy_server_status{proxy=~\"$proxy\",cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}",
-          "legendFormat": "{{proxy}} / {{server}}",
+          "legendFormat": "{{proxy}} / {{server}} / {{state}}",
           "refId": "A"
         }
       ],
       "fieldConfig": {
         "defaults": {
           "min": 0,
-          "max": 2,
+          "max": 1,
           "unit": "none",
           "custom": {
             "drawStyle": "line",
@@ -860,7 +720,73 @@
         "h": 6,
         "w": 16,
         "x": 8,
-        "y": 38
+        "y": 17
+      }
+    },
+    {
+      "title": "Historique des changements d'état",
+      "description": "Nombre de **bascules** d'état administratif dans la fenêtre glissante (5 min), par couple (proxy, serveur). À chaque transition, deux séries `state` passent 0↔1 : `sum(changes) / 2` approxime le nombre de changements.",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus"
+      },
+      "targets": [
+        {
+          "expr": "sum by (proxy, server) (changes(haproxy_server_status{proxy=~\"$proxy\",cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}[5m])) / 2",
+          "legendFormat": "{{proxy}} / {{server}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "unit": "short",
+          "decimals": 0,
+          "custom": {
+            "drawStyle": "bars",
+            "lineInterpolation": "linear",
+            "fillOpacity": 60,
+            "barAlignment": 0,
+            "showPoints": "never"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 0.5
+              },
+              {
+                "color": "orange",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 23
       }
     },
     {
@@ -870,7 +796,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 44
+        "y": 30
       },
       "collapsed": false
     },
@@ -895,7 +821,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 45
+        "y": 31
       }
     },
     {
@@ -919,7 +845,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 45
+        "y": 31
       }
     },
     {
@@ -943,7 +869,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 53
+        "y": 39
       }
     },
     {
@@ -967,7 +893,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 53
+        "y": 39
       }
     },
     {
@@ -977,7 +903,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 61
+        "y": 47
       },
       "collapsed": false
     },
@@ -1005,7 +931,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 62
+        "y": 48
       }
     },
     {
@@ -1037,7 +963,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 62
+        "y": 48
       }
     },
     {
@@ -1061,7 +987,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 70
+        "y": 56
       }
     },
     {
@@ -1085,7 +1011,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 70
+        "y": 56
       }
     },
     {
@@ -1095,7 +1021,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 78
+        "y": 64
       },
       "collapsed": false
     },
@@ -1115,7 +1041,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 79
+        "y": 65
       }
     },
     {
@@ -1143,7 +1069,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 79
+        "y": 65
       }
     },
     {
@@ -1167,7 +1093,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 87
+        "y": 73
       }
     },
     {
@@ -1186,7 +1112,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 87
+        "y": 73
       }
     }
   ]
