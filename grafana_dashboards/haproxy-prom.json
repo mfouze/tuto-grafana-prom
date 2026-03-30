@@ -18,13 +18,52 @@
   "templating": {
     "list": [
       {
+        "name": "cluster",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus"
+        },
+        "label": "Cluster",
+        "query": "label_values(haproxy_backend_status, cluster)",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "current": {}
+      },
+      {
+        "name": "environment",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus"
+        },
+        "label": "Environment",
+        "query": "label_values(haproxy_backend_status{cluster=~\"$cluster\"}, environment)",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "current": {}
+      },
+      {
+        "name": "instance",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus"
+        },
+        "label": "Instance",
+        "query": "label_values(haproxy_backend_status{cluster=~\"$cluster\",environment=~\"$environment\"}, instance)",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "current": {}
+      },
+      {
         "name": "proxy",
         "type": "query",
         "datasource": {
           "type": "prometheus"
         },
         "label": "Proxy",
-        "query": "label_values(haproxy_backend_status, proxy)",
+        "query": "label_values(haproxy_backend_status{cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}, proxy)",
         "refresh": 2,
         "includeAll": true,
         "multi": true,
@@ -55,7 +94,7 @@
       },
       "targets": [
         {
-          "expr": "haproxy_process_uptime_seconds",
+          "expr": "haproxy_process_uptime_seconds{cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}",
           "legendFormat": "Uptime"
         }
       ],
@@ -87,7 +126,7 @@
       },
       "targets": [
         {
-          "expr": "haproxy_process_nbthread",
+          "expr": "haproxy_process_nbthread{cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}",
           "legendFormat": "Threads"
         }
       ],
@@ -118,7 +157,7 @@
       },
       "targets": [
         {
-          "expr": "haproxy_process_current_connections",
+          "expr": "haproxy_process_current_connections{cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}",
           "legendFormat": "Connections"
         }
       ],
@@ -157,7 +196,7 @@
       },
       "targets": [
         {
-          "expr": "haproxy_process_max_connections",
+          "expr": "haproxy_process_max_connections{cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}",
           "legendFormat": "Max"
         }
       ],
@@ -188,7 +227,7 @@
       },
       "targets": [
         {
-          "expr": "rate(haproxy_process_connections_total[5m])",
+          "expr": "rate(haproxy_process_connections_total{cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}[5m])",
           "legendFormat": "conn/s"
         }
       ],
@@ -220,7 +259,7 @@
       },
       "targets": [
         {
-          "expr": "haproxy_process_idle_time_percent",
+          "expr": "haproxy_process_idle_time_percent{cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}",
           "legendFormat": "Idle %"
         }
       ],
@@ -262,7 +301,7 @@
       },
       "targets": [
         {
-          "expr": "haproxy_process_current_session_rate",
+          "expr": "haproxy_process_current_session_rate{cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}",
           "legendFormat": "sess/s"
         }
       ],
@@ -293,7 +332,7 @@
       },
       "targets": [
         {
-          "expr": "haproxy_process_pool_used_bytes",
+          "expr": "haproxy_process_pool_used_bytes{cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}",
           "legendFormat": "Used"
         }
       ],
@@ -336,7 +375,7 @@
       },
       "targets": [
         {
-          "expr": "haproxy_backend_active_servers{proxy=~\"$proxy\"}",
+          "expr": "haproxy_backend_active_servers{proxy=~\"$proxy\",cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}",
           "legendFormat": "{{proxy}}"
         }
       ],
@@ -371,7 +410,7 @@
       },
       "targets": [
         {
-          "expr": "haproxy_backend_current_sessions{proxy=~\"$proxy\"}",
+          "expr": "haproxy_backend_current_sessions{proxy=~\"$proxy\",cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}",
           "legendFormat": "{{proxy}}"
         }
       ],
@@ -390,7 +429,7 @@
       },
       "targets": [
         {
-          "expr": "haproxy_backend_connect_time_average_seconds{proxy=~\"$proxy\"}",
+          "expr": "haproxy_backend_connect_time_average_seconds{proxy=~\"$proxy\",cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}",
           "legendFormat": "{{proxy}}"
         }
       ],
@@ -414,7 +453,7 @@
       },
       "targets": [
         {
-          "expr": "haproxy_server_status{proxy=~\"$proxy\"}",
+          "expr": "haproxy_server_status{proxy=~\"$proxy\",cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}",
           "legendFormat": "{{proxy}} / {{server}}",
           "format": "table",
           "instant": true
@@ -465,7 +504,7 @@
       },
       "targets": [
         {
-          "expr": "rate(haproxy_frontend_bytes_in_total{proxy=~\"$proxy\"}[5m])",
+          "expr": "rate(haproxy_frontend_bytes_in_total{proxy=~\"$proxy\",cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}[5m])",
           "legendFormat": "{{proxy}}"
         }
       ],
@@ -489,7 +528,7 @@
       },
       "targets": [
         {
-          "expr": "rate(haproxy_frontend_bytes_out_total{proxy=~\"$proxy\"}[5m])",
+          "expr": "rate(haproxy_frontend_bytes_out_total{proxy=~\"$proxy\",cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}[5m])",
           "legendFormat": "{{proxy}}"
         }
       ],
@@ -513,7 +552,7 @@
       },
       "targets": [
         {
-          "expr": "rate(haproxy_backend_bytes_in_total{proxy=~\"$proxy\"}[5m])",
+          "expr": "rate(haproxy_backend_bytes_in_total{proxy=~\"$proxy\",cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}[5m])",
           "legendFormat": "{{proxy}}"
         }
       ],
@@ -537,7 +576,7 @@
       },
       "targets": [
         {
-          "expr": "rate(haproxy_backend_bytes_out_total{proxy=~\"$proxy\"}[5m])",
+          "expr": "rate(haproxy_backend_bytes_out_total{proxy=~\"$proxy\",cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}[5m])",
           "legendFormat": "{{proxy}}"
         }
       ],
@@ -572,15 +611,15 @@
       },
       "targets": [
         {
-          "expr": "rate(haproxy_backend_connection_errors_total{proxy=~\"$proxy\"}[5m])",
+          "expr": "rate(haproxy_backend_connection_errors_total{proxy=~\"$proxy\",cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}[5m])",
           "legendFormat": "{{proxy}} conn errors"
         },
         {
-          "expr": "rate(haproxy_backend_response_errors_total{proxy=~\"$proxy\"}[5m])",
+          "expr": "rate(haproxy_backend_response_errors_total{proxy=~\"$proxy\",cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}[5m])",
           "legendFormat": "{{proxy}} resp errors"
         },
         {
-          "expr": "rate(haproxy_frontend_request_errors_total{proxy=~\"$proxy\"}[5m])",
+          "expr": "rate(haproxy_frontend_request_errors_total{proxy=~\"$proxy\",cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}[5m])",
           "legendFormat": "{{proxy}} req errors"
         }
       ],
@@ -599,15 +638,15 @@
       },
       "targets": [
         {
-          "expr": "haproxy_backend_response_time_average_seconds{proxy=~\"$proxy\"}",
+          "expr": "haproxy_backend_response_time_average_seconds{proxy=~\"$proxy\",cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}",
           "legendFormat": "{{proxy}} avg response"
         },
         {
-          "expr": "haproxy_backend_connect_time_average_seconds{proxy=~\"$proxy\"}",
+          "expr": "haproxy_backend_connect_time_average_seconds{proxy=~\"$proxy\",cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}",
           "legendFormat": "{{proxy}} avg connect"
         },
         {
-          "expr": "haproxy_backend_total_time_average_seconds{proxy=~\"$proxy\"}",
+          "expr": "haproxy_backend_total_time_average_seconds{proxy=~\"$proxy\",cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}",
           "legendFormat": "{{proxy}} avg total"
         }
       ],
@@ -631,7 +670,7 @@
       },
       "targets": [
         {
-          "expr": "rate(haproxy_backend_sessions_total{proxy=~\"$proxy\"}[5m])",
+          "expr": "rate(haproxy_backend_sessions_total{proxy=~\"$proxy\",cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}[5m])",
           "legendFormat": "{{proxy}}"
         }
       ],
@@ -655,7 +694,7 @@
       },
       "targets": [
         {
-          "expr": "haproxy_server_check_duration_seconds{proxy=~\"$proxy\"}",
+          "expr": "haproxy_server_check_duration_seconds{proxy=~\"$proxy\",cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}",
           "legendFormat": "{{proxy}} / {{server}}"
         }
       ],
@@ -690,7 +729,7 @@
       },
       "targets": [
         {
-          "expr": "haproxy_server_current_sessions{proxy=~\"$proxy\"}",
+          "expr": "haproxy_server_current_sessions{proxy=~\"$proxy\",cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}",
           "legendFormat": "{{proxy}} / {{server}}"
         }
       ],
@@ -709,11 +748,11 @@
       },
       "targets": [
         {
-          "expr": "rate(haproxy_server_bytes_in_total{proxy=~\"$proxy\"}[5m])",
+          "expr": "rate(haproxy_server_bytes_in_total{proxy=~\"$proxy\",cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}[5m])",
           "legendFormat": "{{server}} in"
         },
         {
-          "expr": "rate(haproxy_server_bytes_out_total{proxy=~\"$proxy\"}[5m])",
+          "expr": "rate(haproxy_server_bytes_out_total{proxy=~\"$proxy\",cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}[5m])",
           "legendFormat": "{{server}} out"
         }
       ],
@@ -737,7 +776,7 @@
       },
       "targets": [
         {
-          "expr": "haproxy_server_downtime_seconds_total{proxy=~\"$proxy\"}",
+          "expr": "haproxy_server_downtime_seconds_total{proxy=~\"$proxy\",cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}",
           "legendFormat": "{{proxy}} / {{server}}"
         }
       ],
@@ -761,7 +800,7 @@
       },
       "targets": [
         {
-          "expr": "haproxy_server_current_queue{proxy=~\"$proxy\"}",
+          "expr": "haproxy_server_current_queue{proxy=~\"$proxy\",cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instance\"}",
           "legendFormat": "{{proxy}} / {{server}}"
         }
       ],
