@@ -1,0 +1,265 @@
+{
+  "id": null,
+  "uid": "pg-exporter",
+  "title": "PostgreSQL Exporter",
+  "description": "PostgreSQL monitoring via postgres-exporter",
+  "tags": ["postgresql", "transactis"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "15s",
+  "time": {"from": "now-1h", "to": "now"},
+  "templating": {
+    "list": [
+      {
+        "name": "instance",
+        "type": "query",
+        "datasource": {"type": "prometheus", "uid": "thanos"},
+        "query": "label_values(pg_up, instance)",
+        "refresh": 2,
+        "current": {}
+      },
+      {
+        "name": "datname",
+        "type": "query",
+        "datasource": {"type": "prometheus", "uid": "thanos"},
+        "query": "label_values(pg_stat_database_numbackends, datname)",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "current": {"text": "All", "value": "$__all"}
+      }
+    ]
+  },
+  "panels": [
+    {
+      "title": "Overview",
+      "type": "row",
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 0},
+      "collapsed": false
+    },
+    {
+      "title": "PostgreSQL Version",
+      "type": "stat",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "pg_settings_server_version_num{instance=~\"$instance\"}", "legendFormat": "Version"}],
+      "fieldConfig": {"defaults": {"thresholds": {"steps": [{"color": "blue", "value": null}]}, "mappings": [{"type": "value", "options": {"160002": {"text": "16.2"}, "160001": {"text": "16.1"}, "160000": {"text": "16.0"}, "150006": {"text": "15.6"}}}]}},
+      "gridPos": {"h": 4, "w": 3, "x": 0, "y": 1}
+    },
+    {
+      "title": "Replication Lag",
+      "type": "stat",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "max(pg_replication_lag_seconds)", "legendFormat": "Lag"}],
+      "fieldConfig": {"defaults": {"unit": "s", "thresholds": {"steps": [{"color": "green", "value": null}, {"color": "orange", "value": 1}, {"color": "red", "value": 10}]}}},
+      "gridPos": {"h": 4, "w": 3, "x": 3, "y": 1}
+    },
+    {
+      "title": "Active Connections",
+      "type": "stat",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "pg_stat_activity_count{instance=~\"$instance\"}", "legendFormat": "Active"}],
+      "fieldConfig": {"defaults": {"thresholds": {"steps": [{"color": "green", "value": null}, {"color": "orange", "value": 100}, {"color": "red", "value": 180}]}}},
+      "gridPos": {"h": 4, "w": 3, "x": 6, "y": 1}
+    },
+    {
+      "title": "Connections Used",
+      "type": "gauge",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "pg_stat_activity_count{instance=~\"$instance\"} / pg_settings_max_connections{instance=~\"$instance\"} * 100", "legendFormat": "%"}],
+      "fieldConfig": {"defaults": {"unit": "percent", "min": 0, "max": 100, "thresholds": {"steps": [{"color": "green", "value": null}, {"color": "orange", "value": 70}, {"color": "red", "value": 90}]}}},
+      "gridPos": {"h": 4, "w": 3, "x": 9, "y": 1}
+    },
+    {
+      "title": "Cache Hit Ratio",
+      "type": "gauge",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "sum(pg_stat_database_blks_hit{instance=~\"$instance\"}) / (sum(pg_stat_database_blks_hit{instance=~\"$instance\"}) + sum(pg_stat_database_blks_read{instance=~\"$instance\"}) + 1) * 100", "legendFormat": "%"}],
+      "fieldConfig": {"defaults": {"unit": "percent", "min": 0, "max": 100, "decimals": 1, "thresholds": {"steps": [{"color": "red", "value": null}, {"color": "orange", "value": 90}, {"color": "green", "value": 95}]}}},
+      "gridPos": {"h": 4, "w": 3, "x": 12, "y": 1}
+    },
+    {
+      "title": "Commit Ratio",
+      "type": "gauge",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "sum(rate(pg_stat_database_xact_commit{instance=~\"$instance\"}[5m])) / (sum(rate(pg_stat_database_xact_commit{instance=~\"$instance\"}[5m])) + sum(rate(pg_stat_database_xact_rollback{instance=~\"$instance\"}[5m])) + 0.001) * 100", "legendFormat": "%"}],
+      "fieldConfig": {"defaults": {"unit": "percent", "min": 0, "max": 100, "decimals": 1, "thresholds": {"steps": [{"color": "red", "value": null}, {"color": "orange", "value": 90}, {"color": "green", "value": 98}]}}},
+      "gridPos": {"h": 4, "w": 3, "x": 15, "y": 1}
+    },
+    {
+      "title": "Transaction Rate",
+      "type": "stat",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "sum(rate(pg_stat_database_xact_commit{instance=~\"$instance\"}[5m])) + sum(rate(pg_stat_database_xact_rollback{instance=~\"$instance\"}[5m]))", "legendFormat": "tx/s"}],
+      "fieldConfig": {"defaults": {"unit": "reqps", "decimals": 1, "thresholds": {"steps": [{"color": "green", "value": null}]}}},
+      "gridPos": {"h": 4, "w": 3, "x": 18, "y": 1}
+    },
+    {
+      "title": "Total DB Size",
+      "type": "stat",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "sum(pg_database_size_bytes{instance=~\"$instance\"})", "legendFormat": "Size"}],
+      "fieldConfig": {"defaults": {"unit": "bytes", "thresholds": {"steps": [{"color": "blue", "value": null}]}}},
+      "gridPos": {"h": 4, "w": 3, "x": 21, "y": 1}
+    },
+    {
+      "title": "Connections",
+      "type": "row",
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 5},
+      "collapsed": false
+    },
+    {
+      "title": "Connections by Database",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "pg_stat_database_numbackends{instance=~\"$instance\", datname=~\"$datname\"}", "legendFormat": "{{datname}}"}],
+      "fieldConfig": {"defaults": {"custom": {"stacking": {"mode": "normal"}, "fillOpacity": 30}}},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 6}
+    },
+    {
+      "title": "Max Connections vs Active",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [
+        {"expr": "pg_settings_max_connections{instance=~\"$instance\"}", "legendFormat": "Max"},
+        {"expr": "pg_stat_activity_count{instance=~\"$instance\"}", "legendFormat": "Active"}
+      ],
+      "fieldConfig": {"defaults": {"custom": {"fillOpacity": 10}}},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 6}
+    },
+    {
+      "title": "Transactions",
+      "type": "row",
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 14},
+      "collapsed": false
+    },
+    {
+      "title": "Commits / Rollbacks per second",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [
+        {"expr": "sum by (datname) (rate(pg_stat_database_xact_commit{instance=~\"$instance\", datname=~\"$datname\"}[5m]))", "legendFormat": "{{datname}} commits"},
+        {"expr": "sum by (datname) (rate(pg_stat_database_xact_rollback{instance=~\"$instance\", datname=~\"$datname\"}[5m]))", "legendFormat": "{{datname}} rollbacks"}
+      ],
+      "fieldConfig": {"defaults": {"unit": "reqps"}},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 15}
+    },
+    {
+      "title": "Tuples Insert / Update / Delete",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [
+        {"expr": "sum by (datname) (rate(pg_stat_database_tup_inserted{instance=~\"$instance\", datname=~\"$datname\"}[5m]))", "legendFormat": "{{datname}} inserts"},
+        {"expr": "sum by (datname) (rate(pg_stat_database_tup_updated{instance=~\"$instance\", datname=~\"$datname\"}[5m]))", "legendFormat": "{{datname}} updates"},
+        {"expr": "sum by (datname) (rate(pg_stat_database_tup_deleted{instance=~\"$instance\", datname=~\"$datname\"}[5m]))", "legendFormat": "{{datname}} deletes"}
+      ],
+      "fieldConfig": {"defaults": {"unit": "reqps"}},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 15}
+    },
+    {
+      "title": "Tuples Fetched / Returned",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [
+        {"expr": "sum by (datname) (rate(pg_stat_database_tup_fetched{instance=~\"$instance\", datname=~\"$datname\"}[5m]))", "legendFormat": "{{datname}} fetched"},
+        {"expr": "sum by (datname) (rate(pg_stat_database_tup_returned{instance=~\"$instance\", datname=~\"$datname\"}[5m]))", "legendFormat": "{{datname}} returned"}
+      ],
+      "fieldConfig": {"defaults": {"unit": "reqps"}},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 23}
+    },
+    {
+      "title": "Database Size",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "pg_database_size_bytes{instance=~\"$instance\", datname=~\"$datname\"}", "legendFormat": "{{datname}}"}],
+      "fieldConfig": {"defaults": {"unit": "bytes"}},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 23}
+    },
+    {
+      "title": "I/O & Buffers",
+      "type": "row",
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 31},
+      "collapsed": false
+    },
+    {
+      "title": "I/O Read / Write Time",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [
+        {"expr": "sum by (datname) (rate(pg_stat_database_blk_read_time{instance=~\"$instance\", datname=~\"$datname\"}[5m]))", "legendFormat": "{{datname}} read"},
+        {"expr": "sum by (datname) (rate(pg_stat_database_blk_write_time{instance=~\"$instance\", datname=~\"$datname\"}[5m]))", "legendFormat": "{{datname}} write"}
+      ],
+      "fieldConfig": {"defaults": {"unit": "ms"}},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 32}
+    },
+    {
+      "title": "BGWriter Buffers",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [
+        {"expr": "rate(pg_stat_bgwriter_buffers_checkpoint_total{instance=~\"$instance\"}[5m])", "legendFormat": "checkpoint"},
+        {"expr": "rate(pg_stat_bgwriter_buffers_clean_total{instance=~\"$instance\"}[5m])", "legendFormat": "clean"},
+        {"expr": "rate(pg_stat_bgwriter_buffers_backend_total{instance=~\"$instance\"}[5m])", "legendFormat": "backend"},
+        {"expr": "rate(pg_stat_bgwriter_buffers_alloc_total{instance=~\"$instance\"}[5m])", "legendFormat": "alloc"}
+      ],
+      "fieldConfig": {"defaults": {"unit": "ops"}},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 32}
+    },
+    {
+      "title": "Locks & Issues",
+      "type": "row",
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 40},
+      "collapsed": false
+    },
+    {
+      "title": "Locks by Mode",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "pg_locks_count{instance=~\"$instance\"}", "legendFormat": "{{datname}} {{mode}}"}],
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 41}
+    },
+    {
+      "title": "Deadlocks",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "increase(pg_stat_database_deadlocks{instance=~\"$instance\", datname=~\"$datname\"}[5m])", "legendFormat": "{{datname}}"}],
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 41}
+    },
+    {
+      "title": "Temp Files",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "increase(pg_stat_database_temp_files{instance=~\"$instance\", datname=~\"$datname\"}[5m])", "legendFormat": "{{datname}}"}],
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 49}
+    },
+    {
+      "title": "Conflicts",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "increase(pg_stat_database_conflicts{instance=~\"$instance\", datname=~\"$datname\"}[5m])", "legendFormat": "{{datname}}"}],
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 49}
+    },
+    {
+      "title": "Replication",
+      "type": "row",
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 57},
+      "collapsed": false
+    },
+    {
+      "title": "Replication Lag (seconds)",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "pg_replication_lag_seconds{instance=~\"$instance\"}", "legendFormat": "lag"}],
+      "fieldConfig": {"defaults": {"unit": "s", "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "orange", "value": 1}, {"color": "red", "value": 10}]}, "custom": {"thresholdsStyle": {"mode": "area"}}}},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 58}
+    },
+    {
+      "title": "Replication Slot Lag (bytes)",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "pg_replication_slots_lag_bytes{instance=~\"$instance\"}", "legendFormat": "{{slot_name}}"}],
+      "fieldConfig": {"defaults": {"unit": "bytes"}},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 58}
+    }
+  ]
+}

@@ -1,0 +1,294 @@
+{
+  "id": null,
+  "uid": "haproxy-standalone",
+  "title": "HAProxy Standalone",
+  "description": "HAProxy monitoring for standalone mode (non-Ingress)",
+  "tags": ["haproxy", "transactis"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "15s",
+  "time": {"from": "now-1h", "to": "now"},
+  "templating": {
+    "list": [
+      {
+        "name": "proxy",
+        "type": "query",
+        "datasource": {"type": "prometheus", "uid": "thanos"},
+        "query": "label_values(haproxy_backend_status, proxy)",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "current": {"text": "All", "value": "$__all"}
+      }
+    ]
+  },
+  "panels": [
+    {
+      "title": "HAProxy Overview",
+      "type": "row",
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 0},
+      "collapsed": false
+    },
+    {
+      "title": "Uptime",
+      "type": "stat",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "haproxy_process_uptime_seconds", "legendFormat": "Uptime"}],
+      "fieldConfig": {"defaults": {"unit": "s", "thresholds": {"steps": [{"color": "green", "value": null}]}}},
+      "gridPos": {"h": 4, "w": 3, "x": 0, "y": 1}
+    },
+    {
+      "title": "Threads",
+      "type": "stat",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "haproxy_process_nbthread", "legendFormat": "Threads"}],
+      "fieldConfig": {"defaults": {"thresholds": {"steps": [{"color": "blue", "value": null}]}}},
+      "gridPos": {"h": 4, "w": 3, "x": 3, "y": 1}
+    },
+    {
+      "title": "Current Connections",
+      "type": "stat",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "haproxy_process_current_connections", "legendFormat": "Connections"}],
+      "fieldConfig": {"defaults": {"thresholds": {"steps": [{"color": "green", "value": null}, {"color": "orange", "value": 100}, {"color": "red", "value": 400}]}}},
+      "gridPos": {"h": 4, "w": 3, "x": 6, "y": 1}
+    },
+    {
+      "title": "Max Connections",
+      "type": "stat",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "haproxy_process_max_connections", "legendFormat": "Max"}],
+      "fieldConfig": {"defaults": {"thresholds": {"steps": [{"color": "blue", "value": null}]}}},
+      "gridPos": {"h": 4, "w": 3, "x": 9, "y": 1}
+    },
+    {
+      "title": "Connection Rate",
+      "type": "stat",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "rate(haproxy_process_connections_total[5m])", "legendFormat": "conn/s"}],
+      "fieldConfig": {"defaults": {"unit": "reqps", "thresholds": {"steps": [{"color": "green", "value": null}]}}},
+      "gridPos": {"h": 4, "w": 3, "x": 12, "y": 1}
+    },
+    {
+      "title": "Idle Time %",
+      "type": "gauge",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "haproxy_process_idle_time_percent", "legendFormat": "Idle %"}],
+      "fieldConfig": {"defaults": {"unit": "percent", "min": 0, "max": 100, "thresholds": {"steps": [{"color": "red", "value": null}, {"color": "orange", "value": 30}, {"color": "green", "value": 60}]}}},
+      "gridPos": {"h": 4, "w": 3, "x": 15, "y": 1}
+    },
+    {
+      "title": "Session Rate",
+      "type": "stat",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "haproxy_process_current_session_rate", "legendFormat": "sess/s"}],
+      "fieldConfig": {"defaults": {"thresholds": {"steps": [{"color": "green", "value": null}]}}},
+      "gridPos": {"h": 4, "w": 3, "x": 18, "y": 1}
+    },
+    {
+      "title": "Memory Used",
+      "type": "stat",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "haproxy_process_pool_used_bytes", "legendFormat": "Used"}],
+      "fieldConfig": {"defaults": {"unit": "bytes", "thresholds": {"steps": [{"color": "green", "value": null}]}}},
+      "gridPos": {"h": 4, "w": 3, "x": 21, "y": 1}
+    },
+    {
+      "title": "pg-write Backends",
+      "type": "row",
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 5},
+      "collapsed": false
+    },
+    {
+      "title": "pg-write Active Servers",
+      "type": "stat",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "haproxy_backend_active_servers{proxy=\"pg-write\"}", "legendFormat": "Active"}],
+      "fieldConfig": {"defaults": {"thresholds": {"steps": [{"color": "red", "value": null}, {"color": "green", "value": 1}]}}},
+      "gridPos": {"h": 4, "w": 4, "x": 0, "y": 6}
+    },
+    {
+      "title": "pg-write Current Sessions",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "haproxy_backend_current_sessions{proxy=\"pg-write\"}", "legendFormat": "Sessions"}],
+      "gridPos": {"h": 8, "w": 10, "x": 4, "y": 6}
+    },
+    {
+      "title": "pg-write Connect Time",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "haproxy_backend_connect_time_average_seconds{proxy=\"pg-write\"}", "legendFormat": "Avg connect time"}],
+      "fieldConfig": {"defaults": {"unit": "s"}},
+      "gridPos": {"h": 8, "w": 10, "x": 14, "y": 6}
+    },
+    {
+      "title": "pg-write Server Status",
+      "type": "table",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "haproxy_server_status{proxy=\"pg-write\"}", "legendFormat": "{{server}}", "format": "table", "instant": true}],
+      "fieldConfig": {"defaults": {"mappings": [{"type": "value", "options": {"0": {"text": "DOWN", "color": "red"}, "1": {"text": "UP", "color": "green"}}}]}},
+      "gridPos": {"h": 4, "w": 4, "x": 0, "y": 10}
+    },
+    {
+      "title": "pg-read Backends",
+      "type": "row",
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 14},
+      "collapsed": false
+    },
+    {
+      "title": "pg-read Active Servers",
+      "type": "stat",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "haproxy_backend_active_servers{proxy=\"pg-read\"}", "legendFormat": "Active"}],
+      "fieldConfig": {"defaults": {"thresholds": {"steps": [{"color": "red", "value": null}, {"color": "green", "value": 1}]}}},
+      "gridPos": {"h": 4, "w": 4, "x": 0, "y": 15}
+    },
+    {
+      "title": "pg-read Current Sessions",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "haproxy_backend_current_sessions{proxy=\"pg-read\"}", "legendFormat": "Sessions"}],
+      "gridPos": {"h": 8, "w": 10, "x": 4, "y": 15}
+    },
+    {
+      "title": "pg-read Connect Time",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "haproxy_backend_connect_time_average_seconds{proxy=\"pg-read\"}", "legendFormat": "Avg connect time"}],
+      "fieldConfig": {"defaults": {"unit": "s"}},
+      "gridPos": {"h": 8, "w": 10, "x": 14, "y": 15}
+    },
+    {
+      "title": "pg-read Server Status",
+      "type": "table",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "haproxy_server_status{proxy=\"pg-read\"}", "legendFormat": "{{server}}", "format": "table", "instant": true}],
+      "fieldConfig": {"defaults": {"mappings": [{"type": "value", "options": {"0": {"text": "DOWN", "color": "red"}, "1": {"text": "UP", "color": "green"}}}]}},
+      "gridPos": {"h": 4, "w": 4, "x": 0, "y": 19}
+    },
+    {
+      "title": "Traffic",
+      "type": "row",
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 23},
+      "collapsed": false
+    },
+    {
+      "title": "Frontend Bytes In",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "rate(haproxy_frontend_bytes_in_total[5m])", "legendFormat": "{{proxy}}"}],
+      "fieldConfig": {"defaults": {"unit": "Bps"}},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 24}
+    },
+    {
+      "title": "Frontend Bytes Out",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "rate(haproxy_frontend_bytes_out_total[5m])", "legendFormat": "{{proxy}}"}],
+      "fieldConfig": {"defaults": {"unit": "Bps"}},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 24}
+    },
+    {
+      "title": "Backend Bytes In",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "rate(haproxy_backend_bytes_in_total{proxy=~\"$proxy\"}[5m])", "legendFormat": "{{proxy}}"}],
+      "fieldConfig": {"defaults": {"unit": "Bps"}},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 32}
+    },
+    {
+      "title": "Backend Bytes Out",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "rate(haproxy_backend_bytes_out_total{proxy=~\"$proxy\"}[5m])", "legendFormat": "{{proxy}}"}],
+      "fieldConfig": {"defaults": {"unit": "Bps"}},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 32}
+    },
+    {
+      "title": "Errors & Performance",
+      "type": "row",
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 40},
+      "collapsed": false
+    },
+    {
+      "title": "Connection Errors",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [
+        {"expr": "rate(haproxy_backend_connection_errors_total{proxy=~\"$proxy\"}[5m])", "legendFormat": "{{proxy}} conn errors"},
+        {"expr": "rate(haproxy_backend_response_errors_total{proxy=~\"$proxy\"}[5m])", "legendFormat": "{{proxy}} resp errors"},
+        {"expr": "rate(haproxy_frontend_request_errors_total[5m])", "legendFormat": "frontend req errors"}
+      ],
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 41}
+    },
+    {
+      "title": "Backend Response Time",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [
+        {"expr": "haproxy_backend_response_time_average_seconds{proxy=~\"$proxy\"}", "legendFormat": "{{proxy}} avg response"},
+        {"expr": "haproxy_backend_connect_time_average_seconds{proxy=~\"$proxy\"}", "legendFormat": "{{proxy}} avg connect"},
+        {"expr": "haproxy_backend_total_time_average_seconds{proxy=~\"$proxy\"}", "legendFormat": "{{proxy}} avg total"}
+      ],
+      "fieldConfig": {"defaults": {"unit": "s"}},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 41}
+    },
+    {
+      "title": "Backend Sessions Rate",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "rate(haproxy_backend_sessions_total{proxy=~\"$proxy\"}[5m])", "legendFormat": "{{proxy}}"}],
+      "fieldConfig": {"defaults": {"unit": "reqps"}},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 49}
+    },
+    {
+      "title": "Server Check Duration",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "haproxy_server_check_duration_seconds{proxy=~\"$proxy\"}", "legendFormat": "{{proxy}} / {{server}}"}],
+      "fieldConfig": {"defaults": {"unit": "s"}},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 49}
+    },
+    {
+      "title": "Per-Server Details",
+      "type": "row",
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 57},
+      "collapsed": false
+    },
+    {
+      "title": "Server Current Sessions",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "haproxy_server_current_sessions{proxy=~\"$proxy\"}", "legendFormat": "{{proxy}} / {{server}}"}],
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 58}
+    },
+    {
+      "title": "Server Bytes In/Out",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [
+        {"expr": "rate(haproxy_server_bytes_in_total{proxy=~\"$proxy\"}[5m])", "legendFormat": "{{server}} in"},
+        {"expr": "rate(haproxy_server_bytes_out_total{proxy=~\"$proxy\"}[5m])", "legendFormat": "{{server}} out"}
+      ],
+      "fieldConfig": {"defaults": {"unit": "Bps"}},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 58}
+    },
+    {
+      "title": "Server Downtime",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "haproxy_server_downtime_seconds_total{proxy=~\"$proxy\"}", "legendFormat": "{{proxy}} / {{server}}"}],
+      "fieldConfig": {"defaults": {"unit": "s"}},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 66}
+    },
+    {
+      "title": "Server Queue",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "haproxy_server_current_queue{proxy=~\"$proxy\"}", "legendFormat": "{{proxy}} / {{server}}"}],
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 66}
+    }
+  ]
+}

@@ -1,0 +1,241 @@
+{
+  "id": null,
+  "uid": "patroni-cluster",
+  "title": "PostgreSQL Patroni Cluster",
+  "description": "Patroni HA cluster monitoring — production-ready",
+  "tags": ["patroni", "postgresql", "transactis"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "15s",
+  "time": {"from": "now-1h", "to": "now"},
+  "templating": {
+    "list": [
+      {
+        "name": "scope",
+        "type": "query",
+        "datasource": {"type": "prometheus", "uid": "thanos"},
+        "query": "label_values(patroni_primary, scope)",
+        "refresh": 2,
+        "current": {"text": "pg-cluster", "value": "pg-cluster"}
+      },
+      {
+        "name": "node",
+        "type": "query",
+        "datasource": {"type": "prometheus", "uid": "thanos"},
+        "query": "label_values(patroni_primary{scope=\"$scope\"}, name)",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "current": {"text": "All", "value": "$__all"}
+      }
+    ]
+  },
+  "panels": [
+    {
+      "title": "Cluster Status",
+      "type": "row",
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 0},
+      "collapsed": false
+    },
+    {
+      "title": "Leader Count",
+      "description": "Must be exactly 1. 0 = no leader (critical), >1 = split-brain (critical)",
+      "type": "stat",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "count(patroni_primary{scope=\"$scope\"} == 1)", "legendFormat": "Leaders"}],
+      "fieldConfig": {"defaults": {"thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "green", "value": 1}, {"color": "red", "value": 2}]}, "mappings": [{"type": "value", "options": {"0": {"text": "NO LEADER", "color": "red"}}}]}},
+      "gridPos": {"h": 5, "w": 4, "x": 0, "y": 1}
+    },
+    {
+      "title": "Replicas",
+      "type": "stat",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "count(patroni_replica{scope=\"$scope\"} == 1)", "legendFormat": "Replicas"}],
+      "fieldConfig": {"defaults": {"thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "orange", "value": 1}, {"color": "green", "value": 2}]}}},
+      "gridPos": {"h": 5, "w": 4, "x": 4, "y": 1}
+    },
+    {
+      "title": "PG Running",
+      "type": "stat",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "count(patroni_postgres_running{scope=\"$scope\"} == 1)", "legendFormat": "Running"}],
+      "fieldConfig": {"defaults": {"thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "orange", "value": 2}, {"color": "green", "value": 3}]}}},
+      "gridPos": {"h": 5, "w": 4, "x": 8, "y": 1}
+    },
+    {
+      "title": "Patroni Version",
+      "type": "stat",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "max(patroni_version{scope=\"$scope\"})", "legendFormat": "Version"}],
+      "fieldConfig": {"defaults": {"thresholds": {"steps": [{"color": "blue", "value": null}]}, "mappings": [{"type": "value", "options": {"30202": {"text": "3.2.2"}, "30201": {"text": "3.2.1"}, "30200": {"text": "3.2.0"}, "30100": {"text": "3.1.0"}, "30000": {"text": "3.0.0"}}}]}},
+      "gridPos": {"h": 5, "w": 4, "x": 12, "y": 1}
+    },
+    {
+      "title": "PostgreSQL Version",
+      "type": "stat",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "max(patroni_postgres_server_version{scope=\"$scope\"})", "legendFormat": "PG Version"}],
+      "fieldConfig": {"defaults": {"thresholds": {"steps": [{"color": "blue", "value": null}]}, "mappings": [{"type": "value", "options": {"160002": {"text": "16.2"}, "160001": {"text": "16.1"}, "160000": {"text": "16.0"}, "150006": {"text": "15.6"}, "150005": {"text": "15.5"}, "140011": {"text": "14.11"}}}]}},
+      "gridPos": {"h": 5, "w": 4, "x": 16, "y": 1}
+    },
+    {
+      "title": "Cluster Lock",
+      "description": "1 = no leader holds the lock (dangerous)",
+      "type": "stat",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "max(patroni_cluster_unlocked{scope=\"$scope\"})", "legendFormat": "Unlocked"}],
+      "fieldConfig": {"defaults": {"thresholds": {"steps": [{"color": "green", "value": null}, {"color": "red", "value": 1}]}, "mappings": [{"type": "value", "options": {"0": {"text": "Locked (OK)"}, "1": {"text": "UNLOCKED", "color": "red"}}}]}},
+      "gridPos": {"h": 5, "w": 4, "x": 20, "y": 1}
+    },
+    {
+      "title": "Node Details",
+      "type": "row",
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 6},
+      "collapsed": false
+    },
+    {
+      "title": "Node Roles",
+      "type": "table",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [
+        {"expr": "patroni_primary{scope=\"$scope\", name=~\"$node\"}", "format": "table", "instant": true, "refId": "A"},
+        {"expr": "patroni_replica{scope=\"$scope\", name=~\"$node\"}", "format": "table", "instant": true, "refId": "B"},
+        {"expr": "patroni_postgres_running{scope=\"$scope\", name=~\"$node\"}", "format": "table", "instant": true, "refId": "C"},
+        {"expr": "patroni_pending_restart{scope=\"$scope\", name=~\"$node\"}", "format": "table", "instant": true, "refId": "D"},
+        {"expr": "patroni_postgres_streaming{scope=\"$scope\", name=~\"$node\"}", "format": "table", "instant": true, "refId": "E"}
+      ],
+      "transformations": [
+        {"id": "merge"},
+        {"id": "organize", "options": {
+          "excludeByName": {"Time": true, "__name__": true, "instance": true, "job": true, "scope": true, "cluster": true},
+          "renameByName": {"name": "Node", "Value #A": "Primary", "Value #B": "Replica", "Value #C": "PG Running", "Value #D": "Pending Restart", "Value #E": "Streaming"}
+        }}
+      ],
+      "fieldConfig": {"overrides": [
+        {"matcher": {"id": "byName", "options": "Primary"}, "properties": [{"id": "mappings", "value": [{"type": "value", "options": {"0": {"text": "No"}, "1": {"text": "YES", "color": "green"}}}]}]},
+        {"matcher": {"id": "byName", "options": "Replica"}, "properties": [{"id": "mappings", "value": [{"type": "value", "options": {"0": {"text": "No"}, "1": {"text": "YES", "color": "blue"}}}]}]},
+        {"matcher": {"id": "byName", "options": "PG Running"}, "properties": [{"id": "mappings", "value": [{"type": "value", "options": {"0": {"text": "DOWN", "color": "red"}, "1": {"text": "UP", "color": "green"}}}]}]},
+        {"matcher": {"id": "byName", "options": "Pending Restart"}, "properties": [{"id": "mappings", "value": [{"type": "value", "options": {"0": {"text": "No"}, "1": {"text": "YES", "color": "orange"}}}]}]},
+        {"matcher": {"id": "byName", "options": "Streaming"}, "properties": [{"id": "mappings", "value": [{"type": "value", "options": {"0": {"text": "No", "color": "red"}, "1": {"text": "YES", "color": "green"}}}]}]}
+      ]},
+      "gridPos": {"h": 6, "w": 24, "x": 0, "y": 7}
+    },
+    {
+      "title": "Replication",
+      "type": "row",
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 13},
+      "collapsed": false
+    },
+    {
+      "title": "WAL Position",
+      "description": "Primary WAL vs replayed on replicas. Gap = lag.",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [
+        {"expr": "patroni_xlog_location{scope=\"$scope\", name=~\"$node\"}", "legendFormat": "{{name}} location"},
+        {"expr": "patroni_xlog_replayed_location{scope=\"$scope\", name=~\"$node\"}", "legendFormat": "{{name}} replayed"},
+        {"expr": "patroni_xlog_received_location{scope=\"$scope\", name=~\"$node\"}", "legendFormat": "{{name}} received"}
+      ],
+      "fieldConfig": {"defaults": {"unit": "bytes"}},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 14}
+    },
+    {
+      "title": "Replication Lag (bytes)",
+      "description": "Primary WAL - replica replayed. >10MB orange, >100MB red.",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "max(patroni_xlog_location{scope=\"$scope\"}) - patroni_xlog_replayed_location{scope=\"$scope\", name=~\"$node\"}", "legendFormat": "{{name}} lag"}],
+      "fieldConfig": {"defaults": {"unit": "bytes", "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "orange", "value": 10000000}, {"color": "red", "value": 100000000}]}, "custom": {"thresholdsStyle": {"mode": "area"}}}},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 14}
+    },
+    {
+      "title": "Timeline",
+      "description": "Timeline increments on failover. All nodes should be on the same timeline.",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "patroni_postgres_timeline{scope=\"$scope\", name=~\"$node\"}", "legendFormat": "{{name}}"}],
+      "fieldConfig": {"defaults": {"decimals": 0}},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 22}
+    },
+    {
+      "title": "DCS Last Seen (seconds ago)",
+      "description": "Time since Patroni contacted etcd. >30s orange, >60s red.",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "time() - patroni_dcs_last_seen{scope=\"$scope\", name=~\"$node\"}", "legendFormat": "{{name}}"}],
+      "fieldConfig": {"defaults": {"unit": "s", "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "orange", "value": 30}, {"color": "red", "value": 60}]}, "custom": {"thresholdsStyle": {"mode": "area"}}}},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 22}
+    },
+    {
+      "title": "State Changes",
+      "type": "row",
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 30},
+      "collapsed": false
+    },
+    {
+      "title": "Primary Role Over Time",
+      "description": "A flip = failover. Watch for unexpected changes.",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "patroni_primary{scope=\"$scope\", name=~\"$node\"}", "legendFormat": "{{name}}"}],
+      "fieldConfig": {"defaults": {"min": 0, "max": 1, "decimals": 0, "custom": {"lineWidth": 2, "fillOpacity": 20}}},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 31}
+    },
+    {
+      "title": "Postmaster Start Time",
+      "description": "When PG was last started. Recent change = restart/failover.",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "patroni_postmaster_start_time{scope=\"$scope\", name=~\"$node\"} * 1000", "legendFormat": "{{name}}"}],
+      "fieldConfig": {"defaults": {"unit": "dateTimeAsIso"}},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 31}
+    },
+    {
+      "title": "Cluster Config",
+      "type": "row",
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 39},
+      "collapsed": false
+    },
+    {
+      "title": "Paused",
+      "type": "stat",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "max(patroni_is_paused{scope=\"$scope\"})", "legendFormat": "Paused"}],
+      "fieldConfig": {"defaults": {"thresholds": {"steps": [{"color": "green", "value": null}, {"color": "orange", "value": 1}]}, "mappings": [{"type": "value", "options": {"0": {"text": "No"}, "1": {"text": "PAUSED", "color": "orange"}}}]}},
+      "gridPos": {"h": 4, "w": 4, "x": 0, "y": 40}
+    },
+    {
+      "title": "Failsafe Mode",
+      "type": "stat",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "max(patroni_failsafe_mode_is_active{scope=\"$scope\"})", "legendFormat": "Failsafe"}],
+      "fieldConfig": {"defaults": {"thresholds": {"steps": [{"color": "blue", "value": null}, {"color": "orange", "value": 1}]}, "mappings": [{"type": "value", "options": {"0": {"text": "Inactive"}, "1": {"text": "ACTIVE", "color": "orange"}}}]}},
+      "gridPos": {"h": 4, "w": 4, "x": 4, "y": 40}
+    },
+    {
+      "title": "WAL Replay Paused",
+      "type": "stat",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "max(patroni_xlog_paused{scope=\"$scope\"})", "legendFormat": "WAL Paused"}],
+      "fieldConfig": {"defaults": {"thresholds": {"steps": [{"color": "green", "value": null}, {"color": "orange", "value": 1}]}, "mappings": [{"type": "value", "options": {"0": {"text": "No"}, "1": {"text": "PAUSED", "color": "orange"}}}]}},
+      "gridPos": {"h": 4, "w": 4, "x": 8, "y": 40}
+    },
+    {
+      "title": "Sync Standby Count",
+      "type": "stat",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "count(patroni_sync_standby{scope=\"$scope\"} == 1) or vector(0)", "legendFormat": "Sync"}],
+      "fieldConfig": {"defaults": {"thresholds": {"steps": [{"color": "blue", "value": null}]}}},
+      "gridPos": {"h": 4, "w": 4, "x": 12, "y": 40}
+    },
+    {
+      "title": "Archive Recovery",
+      "type": "stat",
+      "datasource": {"type": "prometheus", "uid": "thanos"},
+      "targets": [{"expr": "count(patroni_postgres_in_archive_recovery{scope=\"$scope\"} == 1) or vector(0)", "legendFormat": "In Recovery"}],
+      "fieldConfig": {"defaults": {"thresholds": {"steps": [{"color": "green", "value": null}, {"color": "orange", "value": 1}]}}},
+      "gridPos": {"h": 4, "w": 4, "x": 16, "y": 40}
+    }
+  ]
+}
