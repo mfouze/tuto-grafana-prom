@@ -522,7 +522,7 @@
         "y": 5
       },
       "id": 101,
-      "title": "🐘 PostgreSQL",
+      "title": "PostgreSQL",
       "type": "row"
     },
     {
@@ -1530,7 +1530,7 @@
         "y": 30
       },
       "id": 105,
-      "title": "💾 pgBackRest",
+      "title": "pgBackRest",
       "type": "row"
     },
     {
@@ -1956,7 +1956,7 @@
         "y": 36
       },
       "id": 106,
-      "title": "📊 Patroni — Détails Noeuds",
+      "title": "Patroni — Details Noeuds",
       "type": "row"
     },
     {
