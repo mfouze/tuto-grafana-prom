@@ -121,7 +121,7 @@
             "type": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(count by (stanza)(pgbackrest_stanza_status{stanza=~\"$stanza\"}))",
+          "expr": "sum(count by (stanza)(pgbackrest_stanza_status{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\"}))",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -184,7 +184,7 @@
             "type": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(count by (stanza) (pgbackrest_backup_info{stanza=~\"$stanza\", repo_key=~\"$repo_key\"}))",
+          "expr": "sum(count by (stanza) (pgbackrest_backup_info{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\"}))",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -247,7 +247,7 @@
             "type": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(count by (stanza) (pgbackrest_backup_info{stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=\"full\"}))",
+          "expr": "sum(count by (stanza) (pgbackrest_backup_info{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=\"full\"}))",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -310,7 +310,7 @@
             "type": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(count by (stanza) (pgbackrest_backup_info{stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=\"diff\"}))",
+          "expr": "sum(count by (stanza) (pgbackrest_backup_info{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=\"diff\"}))",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -373,7 +373,7 @@
             "type": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(count by (stanza) (pgbackrest_backup_info{stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=\"incr\"}))",
+          "expr": "sum(count by (stanza) (pgbackrest_backup_info{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=\"incr\"}))",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -440,7 +440,7 @@
             "type": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(pgbackrest_backup_error_status{stanza=~\"$stanza\", repo_key=~\"$repo_key\"})",
+          "expr": "sum(pgbackrest_backup_error_status{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\"})",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -914,7 +914,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_stanza_status{stanza=~\"$stanza\"}",
+          "expr": "pgbackrest_stanza_status{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\"}",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -927,7 +927,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_backup_since_last_completion_seconds{stanza=~\"$stanza\", backup_type=\"full\"}",
+          "expr": "pgbackrest_backup_since_last_completion_seconds{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", backup_type=\"full\"}",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -940,7 +940,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_backup_since_last_completion_seconds{stanza=~\"$stanza\", backup_type=\"diff\"}",
+          "expr": "pgbackrest_backup_since_last_completion_seconds{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", backup_type=\"diff\"}",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -953,7 +953,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_backup_since_last_completion_seconds{stanza=~\"$stanza\", backup_type=\"incr\"}",
+          "expr": "pgbackrest_backup_since_last_completion_seconds{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", backup_type=\"incr\"}",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -967,7 +967,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_stanza_backup_lock_status{stanza=~\"$stanza\"}",
+          "expr": "pgbackrest_stanza_backup_lock_status{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\"}",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -981,7 +981,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "(pgbackrest_stanza_backup_complete_bytes{stanza=~\"$stanza\"}/pgbackrest_stanza_backup_total_bytes{stanza=~\"$stanza\"})*100",
+          "expr": "(pgbackrest_stanza_backup_complete_bytes{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\"}/pgbackrest_stanza_backup_total_bytes{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\"})*100",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -995,7 +995,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_stanza_restore_lock_status{stanza=~\"$stanza\"}",
+          "expr": "pgbackrest_stanza_restore_lock_status{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\"}",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -1009,7 +1009,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "(pgbackrest_stanza_restore_complete_bytes{stanza=~\"$stanza\"}/pgbackrest_stanza_restore_total_bytes{stanza=~\"$stanza\"})*100",
+          "expr": "(pgbackrest_stanza_restore_complete_bytes{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\"}/pgbackrest_stanza_restore_total_bytes{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\"})*100",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -1245,7 +1245,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_repo_status{stanza=~\"$stanza\", repo_key=~\"$repo_key\"}",
+          "expr": "pgbackrest_repo_status{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\"}",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -1384,7 +1384,7 @@
             "type": "prometheus"
           },
           "editorMode": "code",
-          "expr": "count by (stanza) (pgbackrest_backup_info{stanza=~\"$stanza\", repo_key=~\"$repo_key\"})",
+          "expr": "count by (stanza) (pgbackrest_backup_info{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\"})",
           "legendFormat": "{{stanza}}",
           "range": true,
           "refId": "A"
@@ -1570,7 +1570,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_wal_archive_status{stanza=~\"$stanza\", repo_key=~\"$repo_key\"}",
+          "expr": "pgbackrest_wal_archive_status{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\"}",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -1712,7 +1712,7 @@
             "type": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg by (stanza) (pgbackrest_backup_size_bytes{stanza=~\"$stanza\", repo_key=~\"$repo_key\"})",
+          "expr": "avg by (stanza) (pgbackrest_backup_size_bytes{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\"})",
           "legendFormat": "{{ stanza }}",
           "range": true,
           "refId": "A"
@@ -1913,7 +1913,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_backup_last_error_status{stanza=~\"$stanza\"}",
+          "expr": "pgbackrest_backup_last_error_status{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\"}",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -1926,7 +1926,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_backup_last_duration_seconds{stanza=~\"$stanza\"}",
+          "expr": "pgbackrest_backup_last_duration_seconds{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\"}",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -2076,7 +2076,7 @@
             "type": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum by (stanza) (pgbackrest_backup_repo_delta_bytes{stanza=~\"$stanza\", repo_key=~\"$repo_key\"})",
+          "expr": "sum by (stanza) (pgbackrest_backup_repo_delta_bytes{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\"})",
           "legendFormat": "{{ stanza }}",
           "range": true,
           "refId": "A"
@@ -2189,7 +2189,7 @@
             "type": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg by (stanza) (pgbackrest_backup_last_duration_seconds{stanza=~\"$stanza\", backup_type=\"full\"})",
+          "expr": "avg by (stanza) (pgbackrest_backup_last_duration_seconds{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", backup_type=\"full\"})",
           "legendFormat": "{{stanza}}",
           "range": true,
           "refId": "A"
@@ -2289,7 +2289,7 @@
             "type": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg by (stanza) (pgbackrest_backup_last_duration_seconds{stanza=~\"$stanza\", backup_type=\"diff\"})",
+          "expr": "avg by (stanza) (pgbackrest_backup_last_duration_seconds{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", backup_type=\"diff\"})",
           "legendFormat": "{{stanza}}",
           "range": true,
           "refId": "A"
@@ -2389,7 +2389,7 @@
             "type": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg by (stanza) (pgbackrest_backup_last_duration_seconds{stanza=~\"$stanza\", backup_type=\"incr\"})",
+          "expr": "avg by (stanza) (pgbackrest_backup_last_duration_seconds{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", backup_type=\"incr\"})",
           "legendFormat": "{{stanza}}",
           "range": true,
           "refId": "A"
@@ -2489,7 +2489,7 @@
             "type": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg by (stanza) (pgbackrest_backup_last_repo_delta_bytes{stanza=~\"$stanza\", backup_type=~\"full\"})",
+          "expr": "avg by (stanza) (pgbackrest_backup_last_repo_delta_bytes{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", backup_type=~\"full\"})",
           "legendFormat": "{{stanza}}",
           "range": true,
           "refId": "A"
@@ -2589,7 +2589,7 @@
             "type": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg by (stanza) (pgbackrest_backup_last_repo_delta_bytes{stanza=~\"$stanza\", backup_type=\"diff\"})",
+          "expr": "avg by (stanza) (pgbackrest_backup_last_repo_delta_bytes{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", backup_type=\"diff\"})",
           "legendFormat": "{{stanza}}",
           "range": true,
           "refId": "A"
@@ -2689,7 +2689,7 @@
             "type": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg by (stanza) (pgbackrest_backup_last_repo_delta_bytes{stanza=~\"$stanza\", backup_type=\"incr\"})",
+          "expr": "avg by (stanza) (pgbackrest_backup_last_repo_delta_bytes{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", backup_type=\"incr\"})",
           "legendFormat": "{{stanza}}",
           "range": true,
           "refId": "A"
@@ -2917,7 +2917,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_backup_last_size_bytes{stanza=~\"$stanza\"}",
+          "expr": "pgbackrest_backup_last_size_bytes{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\"}",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -2931,7 +2931,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_backup_last_delta_bytes{stanza=~\"$stanza\"}",
+          "expr": "pgbackrest_backup_last_delta_bytes{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\"}",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -2945,7 +2945,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_backup_last_repo_size_bytes{stanza=~\"$stanza\"}",
+          "expr": "pgbackrest_backup_last_repo_size_bytes{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\"}",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -2959,7 +2959,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_backup_last_repo_delta_bytes{stanza=~\"$stanza\"}",
+          "expr": "pgbackrest_backup_last_repo_delta_bytes{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\"}",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -2972,7 +2972,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_backup_last_repo_size_map_bytes{stanza=~\"$stanza\"}",
+          "expr": "pgbackrest_backup_last_repo_size_map_bytes{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\"}",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -2986,7 +2986,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_backup_last_repo_delta_map_bytes{stanza=~\"$stanza\"}",
+          "expr": "pgbackrest_backup_last_repo_delta_map_bytes{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\"}",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -3177,7 +3177,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_backup_last_annotations{stanza=~\"$stanza\", backup_type=\"full\"}",
+          "expr": "pgbackrest_backup_last_annotations{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", backup_type=\"full\"}",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -3190,7 +3190,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_backup_last_annotations{stanza=~\"$stanza\", backup_type=\"diff\"}",
+          "expr": "pgbackrest_backup_last_annotations{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", backup_type=\"diff\"}",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -3204,7 +3204,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_backup_last_annotations{stanza=~\"$stanza\", backup_type=\"incr\"}",
+          "expr": "pgbackrest_backup_last_annotations{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", backup_type=\"incr\"}",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -3349,7 +3349,7 @@
             "type": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg by (stanza) (pgbackrest_backup_last_annotations{stanza=~\"$stanza\"})",
+          "expr": "avg by (stanza) (pgbackrest_backup_last_annotations{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\"})",
           "legendFormat": "{{stanza}}",
           "range": true,
           "refId": "A"
@@ -3479,7 +3479,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_backup_last_databases{stanza=~\"$stanza\", backup_type=\"full\"}",
+          "expr": "pgbackrest_backup_last_databases{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", backup_type=\"full\"}",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -3492,7 +3492,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_backup_last_databases{stanza=~\"$stanza\", backup_type=\"diff\"}",
+          "expr": "pgbackrest_backup_last_databases{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", backup_type=\"diff\"}",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -3506,7 +3506,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_backup_last_databases{stanza=~\"$stanza\", backup_type=\"incr\"}",
+          "expr": "pgbackrest_backup_last_databases{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", backup_type=\"incr\"}",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -3651,7 +3651,7 @@
             "type": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg by (stanza) (pgbackrest_backup_last_databases{stanza=~\"$stanza\"})",
+          "expr": "avg by (stanza) (pgbackrest_backup_last_databases{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\"})",
           "legendFormat": "{{stanza}}",
           "range": true,
           "refId": "A"
@@ -3764,7 +3764,7 @@
             "type": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg by (stanza) (pgbackrest_backup_duration_seconds{stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=\"full\"})",
+          "expr": "avg by (stanza) (pgbackrest_backup_duration_seconds{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=\"full\"})",
           "legendFormat": "{{stanza}}",
           "range": true,
           "refId": "A"
@@ -3864,7 +3864,7 @@
             "type": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg by (stanza) (pgbackrest_backup_duration_seconds{stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=\"diff\"})",
+          "expr": "avg by (stanza) (pgbackrest_backup_duration_seconds{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=\"diff\"})",
           "legendFormat": "{{stanza}}",
           "range": true,
           "refId": "A"
@@ -3964,7 +3964,7 @@
             "type": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg by (stanza) (pgbackrest_backup_duration_seconds{stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=\"incr\"})",
+          "expr": "avg by (stanza) (pgbackrest_backup_duration_seconds{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=\"incr\"})",
           "legendFormat": "{{stanza}}",
           "range": true,
           "refId": "A"
@@ -4064,7 +4064,7 @@
             "type": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg by (stanza) (pgbackrest_backup_repo_delta_bytes{stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=~\"full\"})",
+          "expr": "avg by (stanza) (pgbackrest_backup_repo_delta_bytes{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=~\"full\"})",
           "legendFormat": "{{stanza}}",
           "range": true,
           "refId": "A"
@@ -4164,7 +4164,7 @@
             "type": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg by (stanza) (pgbackrest_backup_repo_delta_bytes{stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=\"diff\"})",
+          "expr": "avg by (stanza) (pgbackrest_backup_repo_delta_bytes{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=\"diff\"})",
           "legendFormat": "{{stanza}}",
           "range": true,
           "refId": "A"
@@ -4264,7 +4264,7 @@
             "type": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg by (stanza) (pgbackrest_backup_repo_delta_bytes{stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=\"incr\"})",
+          "expr": "avg by (stanza) (pgbackrest_backup_repo_delta_bytes{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=\"incr\"})",
           "legendFormat": "{{stanza}}",
           "range": true,
           "refId": "A"
@@ -4363,7 +4363,7 @@
             "type": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg by (stanza) (pgbackrest_backup_annotations{stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=\"full\"})",
+          "expr": "avg by (stanza) (pgbackrest_backup_annotations{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=\"full\"})",
           "legendFormat": "{{stanza}}",
           "range": true,
           "refId": "A"
@@ -4462,7 +4462,7 @@
             "type": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg by (stanza) (pgbackrest_backup_annotations{stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=\"diff\"})",
+          "expr": "avg by (stanza) (pgbackrest_backup_annotations{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=\"diff\"})",
           "legendFormat": "{{stanza}}",
           "range": true,
           "refId": "A"
@@ -4561,7 +4561,7 @@
             "type": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg by (stanza) (pgbackrest_backup_annotations{stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=\"incr\"})",
+          "expr": "avg by (stanza) (pgbackrest_backup_annotations{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=\"incr\"})",
           "legendFormat": "{{stanza}}",
           "range": true,
           "refId": "A"
@@ -4660,7 +4660,7 @@
             "type": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg by (stanza) (pgbackrest_backup_databases{stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=\"full\"})",
+          "expr": "avg by (stanza) (pgbackrest_backup_databases{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=\"full\"})",
           "legendFormat": "{{stanza}}",
           "range": true,
           "refId": "A"
@@ -4759,7 +4759,7 @@
             "type": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg by (stanza) (pgbackrest_backup_databases{stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=\"diff\"})",
+          "expr": "avg by (stanza) (pgbackrest_backup_databases{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=\"diff\"})",
           "legendFormat": "{{stanza}}",
           "range": true,
           "refId": "A"
@@ -4858,7 +4858,7 @@
             "type": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg by (stanza) (pgbackrest_backup_databases{stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=\"incr\"})",
+          "expr": "avg by (stanza) (pgbackrest_backup_databases{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=\"incr\"})",
           "legendFormat": "{{stanza}}",
           "range": true,
           "refId": "A"
@@ -5072,7 +5072,7 @@
             "type": "prometheus"
           },
           "editorMode": "code",
-          "expr": "pgbackrest_backup_error_status{stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=~\"$backup_type\", block_incr=~\"$block_incr\", backup_name=~\"$backup_name\"}",
+          "expr": "pgbackrest_backup_error_status{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=~\"$backup_type\", block_incr=~\"$block_incr\", backup_name=~\"$backup_name\"}",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -5359,7 +5359,7 @@
           "datasource": {
             "type": "prometheus"
           },
-          "expr": "pgbackrest_backup_duration_seconds{stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=~\"$backup_type\", backup_name=~\"$backup_name\"}",
+          "expr": "pgbackrest_backup_duration_seconds{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=~\"$backup_type\", backup_name=~\"$backup_name\"}",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -5637,7 +5637,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_backup_size_bytes{stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=~\"$backup_type\", block_incr=~\"$block_incr\", backup_name=~\"$backup_name\"}",
+          "expr": "pgbackrest_backup_size_bytes{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=~\"$backup_type\", block_incr=~\"$block_incr\", backup_name=~\"$backup_name\"}",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -5651,7 +5651,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_backup_delta_bytes{stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=~\"$backup_type\", block_incr=~\"$block_incr\", backup_name=~\"$backup_name\"}",
+          "expr": "pgbackrest_backup_delta_bytes{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=~\"$backup_type\", block_incr=~\"$block_incr\", backup_name=~\"$backup_name\"}",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -5665,7 +5665,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_backup_repo_size_bytes{stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=~\"$backup_type\", block_incr=~\"$block_incr\", backup_name=~\"$backup_name\"}",
+          "expr": "pgbackrest_backup_repo_size_bytes{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=~\"$backup_type\", block_incr=~\"$block_incr\", backup_name=~\"$backup_name\"}",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -5679,7 +5679,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_backup_repo_delta_bytes{stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=~\"$backup_type\", block_incr=~\"$block_incr\", backup_name=~\"$backup_name\"}",
+          "expr": "pgbackrest_backup_repo_delta_bytes{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=~\"$backup_type\", block_incr=~\"$block_incr\", backup_name=~\"$backup_name\"}",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -5692,7 +5692,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_backup_repo_size_map_bytes{stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=~\"$backup_type\", block_incr=~\"$block_incr\", backup_name=~\"$backup_name\"}",
+          "expr": "pgbackrest_backup_repo_size_map_bytes{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=~\"$backup_type\", block_incr=~\"$block_incr\", backup_name=~\"$backup_name\"}",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -5706,7 +5706,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_backup_repo_delta_map_bytes{stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=~\"$backup_type\", block_incr=~\"$block_incr\", backup_name=~\"$backup_name\"}",
+          "expr": "pgbackrest_backup_repo_delta_map_bytes{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=~\"$backup_type\", block_incr=~\"$block_incr\", backup_name=~\"$backup_name\"}",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -6010,7 +6010,7 @@
             "type": "prometheus"
           },
           "editorMode": "code",
-          "expr": "pgbackrest_backup_info{stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=~\"$backup_type\", block_incr=~\"$block_incr\", backup_name=~\"$backup_name\"}",
+          "expr": "pgbackrest_backup_info{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=~\"$backup_type\", block_incr=~\"$block_incr\", backup_name=~\"$backup_name\"}",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -6311,7 +6311,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_backup_annotations{stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=~\"$backup_type\", block_incr=~\"$block_incr\", backup_name=~\"$backup_name\"}",
+          "expr": "pgbackrest_backup_annotations{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=~\"$backup_type\", block_incr=~\"$block_incr\", backup_name=~\"$backup_name\"}",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -6577,7 +6577,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_backup_databases{stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=~\"$backup_type\", block_incr=~\"$block_incr\", backup_name=~\"$backup_name\"}",
+          "expr": "pgbackrest_backup_databases{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=~\"$backup_type\", block_incr=~\"$block_incr\", backup_name=~\"$backup_name\"}",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -6913,7 +6913,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_exporter_build_info",
+          "expr": "pgbackrest_exporter_build_info{cluster=~\"$cluster\",environment=~\"$environment\"}",
           "format": "table",
           "instant": true,
           "legendFormat": "__auto",
@@ -6926,7 +6926,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_exporter_status",
+          "expr": "pgbackrest_exporter_status{cluster=~\"$cluster\",environment=~\"$environment\"}",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -7111,7 +7111,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_version_info",
+          "expr": "pgbackrest_version_info{cluster=~\"$cluster\",environment=~\"$environment\"}",
           "format": "table",
           "instant": true,
           "legendFormat": "__auto",
@@ -7166,19 +7166,61 @@
   "templating": {
     "list": [
       {
+        "name": "cluster",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus"
+        },
+        "label": "Cluster",
+        "definition": "label_values(pgbackrest_repo_status, cluster)",
+        "query": {
+          "query": "label_values(pgbackrest_repo_status, cluster)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "allValue": ".*",
+        "current": {},
+        "options": [],
+        "regex": "",
+        "sort": 1
+      },
+      {
+        "name": "environment",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus"
+        },
+        "label": "Environment",
+        "definition": "label_values(pgbackrest_repo_status{cluster=~\"$cluster\"}, environment)",
+        "query": {
+          "query": "label_values(pgbackrest_repo_status{cluster=~\"$cluster\"}, environment)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "allValue": ".*",
+        "current": {},
+        "options": [],
+        "regex": "",
+        "sort": 1
+      },
+      {
         "allValue": ".*",
         "current": {},
         "datasource": {
           "type": "prometheus"
         },
-        "definition": "label_values(pgbackrest_repo_status, stanza)",
+        "definition": "label_values(pgbackrest_repo_status{cluster=~\"$cluster\",environment=~\"$environment\"}, stanza)",
         "includeAll": true,
         "label": "Stanza",
         "multi": true,
         "name": "stanza",
         "options": [],
         "query": {
-          "query": "label_values(pgbackrest_repo_status, stanza)",
+          "query": "label_values(pgbackrest_repo_status{cluster=~\"$cluster\",environment=~\"$environment\"}, stanza)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 2,
@@ -7192,14 +7234,14 @@
         "datasource": {
           "type": "prometheus"
         },
-        "definition": "label_values(pgbackrest_repo_status{stanza=~\"$stanza\"}, repo_key)",
+        "definition": "label_values(pgbackrest_repo_status{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\"}, repo_key)",
         "includeAll": true,
         "label": "Repo key",
         "multi": true,
         "name": "repo_key",
         "options": [],
         "query": {
-          "query": "label_values(pgbackrest_repo_status{stanza=~\"$stanza\"}, repo_key)",
+          "query": "label_values(pgbackrest_repo_status{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\"}, repo_key)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 2,
@@ -7213,14 +7255,14 @@
         "datasource": {
           "type": "prometheus"
         },
-        "definition": "label_values(pgbackrest_backup_info{stanza=~\"$stanza\", repo_key=~\"$repo_key\"}, backup_type)",
+        "definition": "label_values(pgbackrest_backup_info{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\"}, backup_type)",
         "includeAll": true,
         "label": "Backup type",
         "multi": true,
         "name": "backup_type",
         "options": [],
         "query": {
-          "query": "label_values(pgbackrest_backup_info{stanza=~\"$stanza\", repo_key=~\"$repo_key\"}, backup_type)",
+          "query": "label_values(pgbackrest_backup_info{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\"}, backup_type)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 2,
@@ -7234,14 +7276,14 @@
         "datasource": {
           "type": "prometheus"
         },
-        "definition": "label_values(pgbackrest_backup_info{stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=~\"$backup_type\"}, block_incr)",
+        "definition": "label_values(pgbackrest_backup_info{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=~\"$backup_type\"}, block_incr)",
         "includeAll": true,
         "label": "Block incr",
         "multi": true,
         "name": "block_incr",
         "options": [],
         "query": {
-          "query": "label_values(pgbackrest_backup_info{stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=~\"$backup_type\"}, block_incr)",
+          "query": "label_values(pgbackrest_backup_info{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=~\"$backup_type\"}, block_incr)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 2,
@@ -7255,14 +7297,14 @@
         "datasource": {
           "type": "prometheus"
         },
-        "definition": "label_values(pgbackrest_backup_info{stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=~\"$backup_type\",block_incr=~\"$block_incr\"}, backup_name)",
+        "definition": "label_values(pgbackrest_backup_info{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=~\"$backup_type\",block_incr=~\"$block_incr\"}, backup_name)",
         "includeAll": true,
         "label": "Backup name",
         "multi": true,
         "name": "backup_name",
         "options": [],
         "query": {
-          "query": "label_values(pgbackrest_backup_info{stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=~\"$backup_type\",block_incr=~\"$block_incr\"}, backup_name)",
+          "query": "label_values(pgbackrest_backup_info{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\", repo_key=~\"$repo_key\", backup_type=~\"$backup_type\",block_incr=~\"$block_incr\"}, backup_name)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 2,
