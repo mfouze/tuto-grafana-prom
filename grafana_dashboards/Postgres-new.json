@@ -23,12 +23,11 @@
         },
         "label": "Cluster",
         "name": "cluster",
-        "query": "label_values(pg_up{job=\"pgExporter\"},cluster)",
+        "query": "label_values(pg_up{job=\"PgExporter\"},cluster)",
         "refresh": 1,
         "type": "query",
         "multi": true,
-        "includeAll": true,
-        "allValue": ".*"
+        "includeAll": true
       },
       {
         "current": {
@@ -40,12 +39,11 @@
         },
         "label": "Environment",
         "name": "environment",
-        "query": "label_values(pg_up{job=\"pgExporter\",cluster=~\"$cluster\"},environment)",
+        "query": "label_values(pg_up{job=\"PgExporter\",cluster=~\"$cluster\"},environment)",
         "refresh": 1,
         "type": "query",
         "multi": true,
-        "includeAll": true,
-        "allValue": ".*"
+        "includeAll": true
       },
       {
         "current": {},
@@ -56,11 +54,10 @@
         "label": "Instance",
         "multi": true,
         "name": "instance",
-        "query": "label_values(pg_up{job=\"pgExporter\",cluster=~\"$cluster\",environment=~\"$environment\"},instance)",
+        "query": "label_values(pg_up{job=\"PgExporter\",cluster=~\"$cluster\",environment=~\"$environment\"},instance)",
         "refresh": 1,
         "sort": 1,
-        "type": "query",
-        "allValue": ".*"
+        "type": "query"
       },
       {
         "current": {},
@@ -74,8 +71,7 @@
         "query": "label_values(datname)",
         "refresh": 1,
         "sort": 1,
-        "type": "query",
-        "allValue": ".*"
+        "type": "query"
       },
       {
         "current": {},
@@ -88,8 +84,7 @@
         "name": "mode",
         "query": "label_values({mode=~\"accessexclusivelock|accesssharelock|exclusivelock|rowexclusivelock|rowsharelock|sharelock|sharerowexclusivelock|shareupdateexclusivelock\"}, mode)",
         "refresh": 1,
-        "type": "query",
-        "allValue": ".*"
+        "type": "query"
       }
     ]
   },
@@ -112,25 +107,7 @@
       },
       "fieldConfig": {
         "defaults": {
-          "mappings": [
-            {
-              "options": {
-                "150006": {
-                  "text": "15.6"
-                },
-                "160000": {
-                  "text": "16.0"
-                },
-                "160001": {
-                  "text": "16.1"
-                },
-                "160002": {
-                  "text": "16.2"
-                }
-              },
-              "type": "value"
-            }
-          ],
+    
           "thresholds": {
             "mode": "absolute",
             "steps": [
