@@ -6913,7 +6913,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_exporter_build_info{cluster=~\"$cluster\",environment=~\"$environment\"}",
+          "expr": "pgbackrest_exporter_build_info{cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instances\"}",
           "format": "table",
           "instant": true,
           "legendFormat": "__auto",
@@ -6926,7 +6926,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_exporter_status{cluster=~\"$cluster\",environment=~\"$environment\"}",
+          "expr": "pgbackrest_exporter_status{cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instances\"}",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -7111,7 +7111,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "pgbackrest_version_info{cluster=~\"$cluster\",environment=~\"$environment\"}",
+          "expr": "pgbackrest_version_info{cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instances\"}",
           "format": "table",
           "instant": true,
           "legendFormat": "__auto",
@@ -7208,19 +7208,40 @@
         "sort": 1
       },
       {
+        "name": "instances",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus"
+        },
+        "label": "Instances",
+        "definition": "label_values(pgbackrest_repo_status{cluster=~\"$cluster\",environment=~\"$environment\"}, instance)",
+        "query": {
+          "query": "label_values(pgbackrest_repo_status{cluster=~\"$cluster\",environment=~\"$environment\"}, instance)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "allValue": ".*",
+        "current": {},
+        "options": [],
+        "regex": "",
+        "sort": 1
+      },
+      {
         "allValue": ".*",
         "current": {},
         "datasource": {
           "type": "prometheus"
         },
-        "definition": "label_values(pgbackrest_repo_status{cluster=~\"$cluster\",environment=~\"$environment\"}, stanza)",
+        "definition": "label_values(pgbackrest_repo_status{cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instances\"}, stanza)",
         "includeAll": true,
         "label": "Stanza",
         "multi": true,
         "name": "stanza",
         "options": [],
         "query": {
-          "query": "label_values(pgbackrest_repo_status{cluster=~\"$cluster\",environment=~\"$environment\"}, stanza)",
+          "query": "label_values(pgbackrest_repo_status{cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instances\"}, stanza)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 2,
@@ -7234,14 +7255,14 @@
         "datasource": {
           "type": "prometheus"
         },
-        "definition": "label_values(pgbackrest_repo_status{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\"}, repo_key)",
+        "definition": "label_values(pgbackrest_repo_status{cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instances\",stanza=~\"$stanza\"}, repo_key)",
         "includeAll": true,
         "label": "Repo key",
         "multi": true,
         "name": "repo_key",
         "options": [],
         "query": {
-          "query": "label_values(pgbackrest_repo_status{cluster=~\"$cluster\",environment=~\"$environment\",stanza=~\"$stanza\"}, repo_key)",
+          "query": "label_values(pgbackrest_repo_status{cluster=~\"$cluster\",environment=~\"$environment\",instance=~\"$instances\",stanza=~\"$stanza\"}, repo_key)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 2,

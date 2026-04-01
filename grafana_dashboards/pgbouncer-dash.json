@@ -93,7 +93,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum (pgbouncer_pools_client_active_connections{database=~\"$db\"})",
+          "expr": "sum (pgbouncer_pools_client_active_connections{cluster=~\"$cluster\", environment=~\"$environment\", instance=~\"$instances\", database=~\"$db\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -186,7 +186,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sort_desc( sum (pgbouncer_stats_totals_queries_pooled_total{database=~\"$db\"} ) )",
+          "expr": "sort_desc( sum (pgbouncer_stats_totals_queries_pooled_total{cluster=~\"$cluster\", environment=~\"$environment\", instance=~\"$instances\", database=~\"$db\"} ) )",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -265,7 +265,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum (pgbouncer_databases_pool_size{database=~\"$db\"})",
+          "expr": "sum (pgbouncer_databases_pool_size{cluster=~\"$cluster\", environment=~\"$environment\", instance=~\"$instances\", database=~\"$db\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -373,7 +373,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum (rate(pgbouncer_databases_reserve_pool_size{database=~\"$db\"}[30m]))",
+          "expr": "sum (rate(pgbouncer_databases_reserve_pool_size{cluster=~\"$cluster\", environment=~\"$environment\", instance=~\"$instances\", database=~\"$db\"}[30m]))",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -478,7 +478,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sort_desc( sum ( rate(pgbouncer_stats_totals_queries_duration_seconds_total{database=\"$db\"}[30m]) ) )",
+          "expr": "sort_desc( sum ( rate(pgbouncer_stats_totals_queries_duration_seconds_total{cluster=~\"$cluster\", environment=~\"$environment\", instance=~\"$instances\", database=\"$db\"}[30m]) ) )",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -587,7 +587,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sort_desc( sum ( rate(pgbouncer_stats_totals_queries_duration_seconds_total{database=~\"$db\"}[30m]) ) )",
+          "expr": "sort_desc( sum ( rate(pgbouncer_stats_totals_queries_duration_seconds_total{cluster=~\"$cluster\", environment=~\"$environment\", instance=~\"$instances\", database=~\"$db\"}[30m]) ) )",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -596,7 +596,7 @@
           "refId": "B"
         },
         {
-          "expr": "sort_desc( sum ( rate(pgbouncer_pools_client_maxwait_seconds{database=~\"$db\"}[30m]) ) ) ",
+          "expr": "sort_desc( sum ( rate(pgbouncer_pools_client_maxwait_seconds{cluster=~\"$cluster\", environment=~\"$environment\", instance=~\"$instances\", database=~\"$db\"}[30m]) ) ) ",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -703,7 +703,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sort_desc( sum ( rate(pgbouncer_stats_totals_server_in_transaction_seconds_total{database=~\"$db\"}[30m]) ) )  ",
+          "expr": "sort_desc( sum ( rate(pgbouncer_stats_totals_server_in_transaction_seconds_total{cluster=~\"$cluster\", environment=~\"$environment\", instance=~\"$instances\", database=~\"$db\"}[30m]) ) )  ",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -711,7 +711,7 @@
           "refId": "D"
         },
         {
-          "expr": "sort_desc( sum ( rate(pgbouncer_stats_totals_sql_transactions_pooled_total{database=~\"$db\"}[30m]) ) )",
+          "expr": "sort_desc( sum ( rate(pgbouncer_stats_totals_sql_transactions_pooled_total{cluster=~\"$cluster\", environment=~\"$environment\", instance=~\"$instances\", database=~\"$db\"}[30m]) ) )",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -816,7 +816,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "pgbouncer_pools_client_active_connections{database=~\"$db\"}",
+          "expr": "pgbouncer_pools_client_active_connections{cluster=~\"$cluster\", environment=~\"$environment\", instance=~\"$instances\", database=~\"$db\"}",
           "format": "time_series",
           "instant": false,
           "interval": "",
@@ -825,7 +825,7 @@
           "refId": "A"
         },
         {
-          "expr": "pgbouncer_pools_client_waiting_connections{database=~\"$db\"}",
+          "expr": "pgbouncer_pools_client_waiting_connections{cluster=~\"$cluster\", environment=~\"$environment\", instance=~\"$instances\", database=~\"$db\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -833,7 +833,7 @@
           "refId": "C"
         },
         {
-          "expr": "pgbouncer_pools_server_active_connections{database=~\"$db\"}",
+          "expr": "pgbouncer_pools_server_active_connections{cluster=~\"$cluster\", environment=~\"$environment\", instance=~\"$instances\", database=~\"$db\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -841,7 +841,7 @@
           "refId": "B"
         },
         {
-          "expr": "pgbouncer_pools_server_idle_connections{database=~\"$db\"}",
+          "expr": "pgbouncer_pools_server_idle_connections{cluster=~\"$cluster\", environment=~\"$environment\", instance=~\"$instances\", database=~\"$db\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -849,7 +849,7 @@
           "refId": "D"
         },
         {
-          "expr": "pgbouncer_pools_server_used_connections{database=~\"$db\"}",
+          "expr": "pgbouncer_pools_server_used_connections{cluster=~\"$cluster\", environment=~\"$environment\", instance=~\"$instances\", database=~\"$db\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -857,7 +857,7 @@
           "refId": "E"
         },
         {
-          "expr": "pgbouncer_pools_server_testing_connections{database=~\"$db\"}",
+          "expr": "pgbouncer_pools_server_testing_connections{cluster=~\"$cluster\", environment=~\"$environment\", instance=~\"$instances\", database=~\"$db\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -865,7 +865,7 @@
           "refId": "F"
         },
         {
-          "expr": "pgbouncer_pools_server_login_connections{database=~\"$db\"}",
+          "expr": "pgbouncer_pools_server_login_connections{cluster=~\"$cluster\", environment=~\"$environment\", instance=~\"$instances\", database=~\"$db\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -873,7 +873,7 @@
           "refId": "G"
         },
         {
-          "expr": "pgbouncer_databases_current_connections{database=~\"$db\"}",
+          "expr": "pgbouncer_databases_current_connections{cluster=~\"$cluster\", environment=~\"$environment\", instance=~\"$instances\", database=~\"$db\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -984,7 +984,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sort_desc( sum ( rate(pgbouncer_stats_totals_received_bytes_total{database=~\"$db\"}[30m])*8 ) )",
+          "expr": "sort_desc( sum ( rate(pgbouncer_stats_totals_received_bytes_total{cluster=~\"$cluster\", environment=~\"$environment\", instance=~\"$instances\", database=~\"$db\"}[30m])*8 ) )",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -993,7 +993,7 @@
           "refId": "B"
         },
         {
-          "expr": "sort_desc( sum ( rate(pgbouncer_stats_totals_sent_bytes_total{database=~\"$db\"}[30m])*8 ) )",
+          "expr": "sort_desc( sum ( rate(pgbouncer_stats_totals_sent_bytes_total{cluster=~\"$cluster\", environment=~\"$environment\", instance=~\"$instances\", database=~\"$db\"}[30m])*8 ) )",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -1056,13 +1056,88 @@
         },
         "definition": "",
         "error": null,
+        "hide": 0,
+        "includeAll": true,
+        "label": "Cluster",
+        "multi": true,
+        "name": "cluster",
+        "options": [],
+        "query": "label_values(pgbouncer_up, cluster)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": {
+          "type": "prometheus"
+        },
+        "definition": "",
+        "error": null,
+        "hide": 0,
+        "includeAll": true,
+        "label": "Environment",
+        "multi": true,
+        "name": "environment",
+        "options": [],
+        "query": "label_values(pgbouncer_up{cluster=~\"$cluster\"}, environment)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": {
+          "type": "prometheus"
+        },
+        "definition": "",
+        "error": null,
+        "hide": 0,
+        "includeAll": true,
+        "label": "Instances",
+        "multi": true,
+        "name": "instances",
+        "options": [],
+        "query": "label_values(pgbouncer_up{cluster=~\"$cluster\", environment=~\"$environment\"}, instance)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": {
+          "type": "prometheus"
+        },
+        "definition": "",
+        "error": null,
         "hide": 2,
         "includeAll": true,
         "label": "Host",
         "multi": true,
         "name": "host",
         "options": [],
-        "query": "label_values(pgbouncer_up, instance)",
+        "query": "label_values(pgbouncer_up{cluster=~\"$cluster\", environment=~\"$environment\", instance=~\"$instances\"}, instance)",
         "refresh": 1,
         "regex": "/([^:]+):.*/",
         "skipUrlSync": false,
@@ -1087,7 +1162,7 @@
         "multi": false,
         "name": "port",
         "options": [],
-        "query": "label_values(pgbouncer_up, instance)",
+        "query": "label_values(pgbouncer_up{cluster=~\"$cluster\", environment=~\"$environment\", instance=~\"$instances\"}, instance)",
         "refresh": 1,
         "regex": "/[^:]+:(.*)/",
         "skipUrlSync": false,
@@ -1112,7 +1187,7 @@
         "multi": true,
         "name": "db",
         "options": [],
-        "query": "label_values(pgbouncer_databases_current_connections,database)",
+        "query": "label_values(pgbouncer_databases_current_connections{cluster=~\"$cluster\", environment=~\"$environment\", instance=~\"$instances\"},database)",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -1137,7 +1212,7 @@
         "multi": true,
         "name": "service",
         "options": [],
-        "query": "label_values(pgbouncer_up, service)",
+        "query": "label_values(pgbouncer_up{cluster=~\"$cluster\", environment=~\"$environment\", instance=~\"$instances\"}, service)",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,

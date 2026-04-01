@@ -19,16 +19,57 @@
   "templating": {
     "list": [
       {
+        "name": "cluster",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus"
+        },
+        "query": "label_values(patroni_primary, cluster)",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        }
+      },
+      {
+        "name": "environment",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus"
+        },
+        "query": "label_values(patroni_primary{cluster=~\"$cluster\"}, environment)",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        }
+      },
+      {
         "name": "scope",
         "type": "query",
         "datasource": {
           "type": "prometheus"
         },
-        "query": "label_values(patroni_primary, scope)",
+        "query": "label_values(patroni_primary{cluster=~\"$cluster\", environment=~\"$environment\"}, scope)",
+        "refresh": 2
+      },
+      {
+        "name": "instances",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus"
+        },
+        "query": "label_values(patroni_primary{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\"}, instance)",
         "refresh": 2,
+        "includeAll": true,
+        "multi": true,
         "current": {
-          "text": "pg-cluster",
-          "value": "pg-cluster"
+          "text": "All",
+          "value": "$__all"
         }
       },
       {
@@ -37,7 +78,7 @@
         "datasource": {
           "type": "prometheus"
         },
-        "query": "label_values(patroni_primary{scope=\"$scope\"}, name)",
+        "query": "label_values(patroni_primary{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\"}, name)",
         "refresh": 2,
         "includeAll": true,
         "multi": true,
@@ -69,7 +110,7 @@
       },
       "targets": [
         {
-          "expr": "count(patroni_primary{scope=\"$scope\"} == 1)",
+          "expr": "count(patroni_primary{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\"} == 1)",
           "legendFormat": "Leaders"
         }
       ],
@@ -120,7 +161,7 @@
       },
       "targets": [
         {
-          "expr": "count(patroni_replica{scope=\"$scope\"} == 1)",
+          "expr": "count(patroni_replica{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\"} == 1)",
           "legendFormat": "Replicas"
         }
       ],
@@ -160,7 +201,7 @@
       },
       "targets": [
         {
-          "expr": "count(patroni_postgres_running{scope=\"$scope\"} == 1)",
+          "expr": "count(patroni_postgres_running{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\"} == 1)",
           "legendFormat": "Running"
         }
       ],
@@ -200,7 +241,7 @@
       },
       "targets": [
         {
-          "expr": "max(patroni_version{scope=\"$scope\"})",
+          "expr": "max(patroni_version{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\"})",
           "legendFormat": "Version"
         }
       ],
@@ -214,28 +255,8 @@
               }
             ]
           },
-          "mappings": [
-            {
-              "type": "value",
-              "options": {
-                "30202": {
-                  "text": "3.2.2"
-                },
-                "30201": {
-                  "text": "3.2.1"
-                },
-                "30200": {
-                  "text": "3.2.0"
-                },
-                "30100": {
-                  "text": "3.1.0"
-                },
-                "30000": {
-                  "text": "3.0.0"
-                }
-              }
-            }
-          ]
+          "unit": "none",
+          "decimals": 0
         }
       },
       "gridPos": {
@@ -253,7 +274,7 @@
       },
       "targets": [
         {
-          "expr": "max(patroni_postgres_server_version{scope=\"$scope\"})",
+          "expr": "max(patroni_postgres_server_version{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\"})",
           "legendFormat": "PG Version"
         }
       ],
@@ -267,31 +288,8 @@
               }
             ]
           },
-          "mappings": [
-            {
-              "type": "value",
-              "options": {
-                "160002": {
-                  "text": "16.2"
-                },
-                "160001": {
-                  "text": "16.1"
-                },
-                "160000": {
-                  "text": "16.0"
-                },
-                "150006": {
-                  "text": "15.6"
-                },
-                "150005": {
-                  "text": "15.5"
-                },
-                "140011": {
-                  "text": "14.11"
-                }
-              }
-            }
-          ]
+          "unit": "none",
+          "decimals": 0
         }
       },
       "gridPos": {
@@ -310,7 +308,7 @@
       },
       "targets": [
         {
-          "expr": "max(patroni_cluster_unlocked{scope=\"$scope\"})",
+          "expr": "max(patroni_cluster_unlocked{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\"})",
           "legendFormat": "Unlocked"
         }
       ],
@@ -370,31 +368,31 @@
       },
       "targets": [
         {
-          "expr": "patroni_primary{scope=\"$scope\", name=~\"$node\"}",
+          "expr": "patroni_primary{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}",
           "format": "table",
           "instant": true,
           "refId": "A"
         },
         {
-          "expr": "patroni_replica{scope=\"$scope\", name=~\"$node\"}",
+          "expr": "patroni_replica{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}",
           "format": "table",
           "instant": true,
           "refId": "B"
         },
         {
-          "expr": "patroni_postgres_running{scope=\"$scope\", name=~\"$node\"}",
+          "expr": "patroni_postgres_running{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}",
           "format": "table",
           "instant": true,
           "refId": "C"
         },
         {
-          "expr": "patroni_pending_restart{scope=\"$scope\", name=~\"$node\"}",
+          "expr": "patroni_pending_restart{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}",
           "format": "table",
           "instant": true,
           "refId": "D"
         },
         {
-          "expr": "patroni_postgres_streaming{scope=\"$scope\", name=~\"$node\"}",
+          "expr": "patroni_postgres_streaming{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}",
           "format": "table",
           "instant": true,
           "refId": "E"
@@ -565,13 +563,68 @@
       }
     },
     {
+      "id": 1001,
+      "title": "Node State & Failover (per node)",
+      "description": "Binary node state over time + spikes when role/timeline changes (failover).",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus"
+      },
+      "targets": [
+        {
+          "expr": "patroni_primary{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}",
+          "legendFormat": "{{name}} primary"
+        },
+        {
+          "expr": "patroni_replica{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}",
+          "legendFormat": "{{name}} replica"
+        },
+        {
+          "expr": "patroni_postgres_running{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}",
+          "legendFormat": "{{name}} pg running"
+        },
+        {
+          "expr": "patroni_postgres_streaming{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}",
+          "legendFormat": "{{name}} streaming"
+        },
+        {
+          "expr": "patroni_pending_restart{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}",
+          "legendFormat": "{{name}} pending restart"
+        },
+        {
+          "expr": "changes(patroni_primary{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}[5m])",
+          "legendFormat": "{{name}} role changes/5m"
+        },
+        {
+          "expr": "changes(patroni_postgres_timeline{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}[5m])",
+          "legendFormat": "{{name}} timeline changes/5m"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "decimals": 0,
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10
+          }
+        }
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 13
+      }
+    },
+    {
       "title": "Replication",
       "type": "row",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 13
+        "y": 19
       },
       "collapsed": false
     },
@@ -584,15 +637,15 @@
       },
       "targets": [
         {
-          "expr": "patroni_xlog_location{scope=\"$scope\", name=~\"$node\"}",
+          "expr": "patroni_xlog_location{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}",
           "legendFormat": "{{name}} location"
         },
         {
-          "expr": "patroni_xlog_replayed_location{scope=\"$scope\", name=~\"$node\"}",
+          "expr": "patroni_xlog_replayed_location{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}",
           "legendFormat": "{{name}} replayed"
         },
         {
-          "expr": "patroni_xlog_received_location{scope=\"$scope\", name=~\"$node\"}",
+          "expr": "patroni_xlog_received_location{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}",
           "legendFormat": "{{name}} received"
         }
       ],
@@ -605,7 +658,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 14
+        "y": 20
       }
     },
     {
@@ -617,7 +670,7 @@
       },
       "targets": [
         {
-          "expr": "max(patroni_xlog_location{scope=\"$scope\"}) - patroni_xlog_replayed_location{scope=\"$scope\", name=~\"$node\"}",
+          "expr": "max(patroni_xlog_location{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\"}) - patroni_xlog_replayed_location{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}",
           "legendFormat": "{{name}} lag"
         }
       ],
@@ -652,7 +705,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 14
+        "y": 20
       }
     },
     {
@@ -664,7 +717,7 @@
       },
       "targets": [
         {
-          "expr": "patroni_postgres_timeline{scope=\"$scope\", name=~\"$node\"}",
+          "expr": "patroni_postgres_timeline{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}",
           "legendFormat": "{{name}}"
         }
       ],
@@ -677,7 +730,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 22
+        "y": 28
       }
     },
     {
@@ -689,7 +742,7 @@
       },
       "targets": [
         {
-          "expr": "time() - patroni_dcs_last_seen{scope=\"$scope\", name=~\"$node\"}",
+          "expr": "time() - patroni_dcs_last_seen{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}",
           "legendFormat": "{{name}}"
         }
       ],
@@ -724,7 +777,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 22
+        "y": 28
       }
     },
     {
@@ -734,7 +787,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 30
+        "y": 36
       },
       "collapsed": false
     },
@@ -747,7 +800,7 @@
       },
       "targets": [
         {
-          "expr": "patroni_primary{scope=\"$scope\", name=~\"$node\"}",
+          "expr": "patroni_primary{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}",
           "legendFormat": "{{name}}"
         }
       ],
@@ -766,7 +819,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 31
+        "y": 37
       }
     },
     {
@@ -778,7 +831,7 @@
       },
       "targets": [
         {
-          "expr": "patroni_postmaster_start_time{scope=\"$scope\", name=~\"$node\"} * 1000",
+          "expr": "patroni_postmaster_start_time{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"} * 1000",
           "legendFormat": "{{name}}"
         }
       ],
@@ -791,7 +844,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 31
+        "y": 37
       }
     },
     {
@@ -801,7 +854,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 39
+        "y": 45
       },
       "collapsed": false
     },
@@ -813,7 +866,7 @@
       },
       "targets": [
         {
-          "expr": "max(patroni_is_paused{scope=\"$scope\"})",
+          "expr": "max(patroni_is_paused{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\"})",
           "legendFormat": "Paused"
         }
       ],
@@ -851,7 +904,7 @@
         "h": 4,
         "w": 4,
         "x": 0,
-        "y": 40
+        "y": 46
       }
     },
     {
@@ -862,7 +915,7 @@
       },
       "targets": [
         {
-          "expr": "max(patroni_failsafe_mode_is_active{scope=\"$scope\"})",
+          "expr": "max(patroni_failsafe_mode_is_active{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\"})",
           "legendFormat": "Failsafe"
         }
       ],
@@ -900,7 +953,7 @@
         "h": 4,
         "w": 4,
         "x": 4,
-        "y": 40
+        "y": 46
       }
     },
     {
@@ -911,7 +964,7 @@
       },
       "targets": [
         {
-          "expr": "max(patroni_xlog_paused{scope=\"$scope\"})",
+          "expr": "max(patroni_xlog_paused{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\"})",
           "legendFormat": "WAL Paused"
         }
       ],
@@ -949,7 +1002,7 @@
         "h": 4,
         "w": 4,
         "x": 8,
-        "y": 40
+        "y": 46
       }
     },
     {
@@ -960,7 +1013,7 @@
       },
       "targets": [
         {
-          "expr": "count(patroni_sync_standby{scope=\"$scope\"} == 1) or vector(0)",
+          "expr": "count(patroni_sync_standby{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\"} == 1) or vector(0)",
           "legendFormat": "Sync"
         }
       ],
@@ -980,7 +1033,7 @@
         "h": 4,
         "w": 4,
         "x": 12,
-        "y": 40
+        "y": 46
       }
     },
     {
@@ -991,7 +1044,7 @@
       },
       "targets": [
         {
-          "expr": "count(patroni_postgres_in_archive_recovery{scope=\"$scope\"} == 1) or vector(0)",
+          "expr": "count(patroni_postgres_in_archive_recovery{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\"} == 1) or vector(0)",
           "legendFormat": "In Recovery"
         }
       ],
@@ -1015,7 +1068,7 @@
         "h": 4,
         "w": 4,
         "x": 16,
-        "y": 40
+        "y": 46
       }
     }
   ]

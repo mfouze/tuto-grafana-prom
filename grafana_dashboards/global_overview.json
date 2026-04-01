@@ -2221,6 +2221,28 @@
         "datasource": {
           "type": "prometheus"
         },
+        "definition": "label_values(patroni_version{scope=~\"$cluster\"}, environment)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Environment",
+        "multi": true,
+        "name": "environment",
+        "options": [],
+        "query": {
+          "query": "label_values(patroni_version{scope=~\"$cluster\"}, environment)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "prometheus"
+        },
         "definition": "label_values(up, instance)",
         "hide": 0,
         "includeAll": true,
