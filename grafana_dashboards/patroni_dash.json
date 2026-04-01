@@ -58,7 +58,7 @@
         "refresh": 2
       },
       {
-        "name": "instances",
+        "name": "instance",
         "type": "query",
         "datasource": {
           "type": "prometheus"
@@ -78,7 +78,7 @@
         "datasource": {
           "type": "prometheus"
         },
-        "query": "label_values(patroni_primary{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\"}, name)",
+        "query": "label_values(patroni_primary{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instance\"}, name)",
         "refresh": 2,
         "includeAll": true,
         "multi": true,
@@ -110,7 +110,7 @@
       },
       "targets": [
         {
-          "expr": "count(patroni_primary{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\"} == 1)",
+          "expr": "count(patroni_primary{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instance\"} == 1)",
           "legendFormat": "Leaders"
         }
       ],
@@ -161,7 +161,7 @@
       },
       "targets": [
         {
-          "expr": "count(patroni_replica{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\"} == 1)",
+          "expr": "count(patroni_replica{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instance\"} == 1)",
           "legendFormat": "Replicas"
         }
       ],
@@ -201,7 +201,7 @@
       },
       "targets": [
         {
-          "expr": "count(patroni_postgres_running{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\"} == 1)",
+          "expr": "count(patroni_postgres_running{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instance\"} == 1)",
           "legendFormat": "Running"
         }
       ],
@@ -241,7 +241,7 @@
       },
       "targets": [
         {
-          "expr": "max(patroni_version{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\"})",
+          "expr": "max(patroni_version{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instance\"})",
           "legendFormat": "Version"
         }
       ],
@@ -274,7 +274,7 @@
       },
       "targets": [
         {
-          "expr": "max(patroni_postgres_server_version{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\"})",
+          "expr": "max(patroni_postgres_server_version{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instance\"})",
           "legendFormat": "PG Version"
         }
       ],
@@ -308,7 +308,7 @@
       },
       "targets": [
         {
-          "expr": "max(patroni_cluster_unlocked{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\"})",
+          "expr": "max(patroni_cluster_unlocked{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instance\"})",
           "legendFormat": "Unlocked"
         }
       ],
@@ -368,31 +368,31 @@
       },
       "targets": [
         {
-          "expr": "patroni_primary{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}",
+          "expr": "patroni_primary{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instance\", name=~\"$node\"}",
           "format": "table",
           "instant": true,
           "refId": "A"
         },
         {
-          "expr": "patroni_replica{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}",
+          "expr": "patroni_replica{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instance\", name=~\"$node\"}",
           "format": "table",
           "instant": true,
           "refId": "B"
         },
         {
-          "expr": "patroni_postgres_running{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}",
+          "expr": "patroni_postgres_running{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instance\", name=~\"$node\"}",
           "format": "table",
           "instant": true,
           "refId": "C"
         },
         {
-          "expr": "patroni_pending_restart{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}",
+          "expr": "patroni_pending_restart{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instance\", name=~\"$node\"}",
           "format": "table",
           "instant": true,
           "refId": "D"
         },
         {
-          "expr": "patroni_postgres_streaming{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}",
+          "expr": "patroni_postgres_streaming{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instance\", name=~\"$node\"}",
           "format": "table",
           "instant": true,
           "refId": "E"
@@ -572,31 +572,31 @@
       },
       "targets": [
         {
-          "expr": "patroni_primary{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}",
+          "expr": "patroni_primary{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instance\", name=~\"$node\"}",
           "legendFormat": "{{name}} primary"
         },
         {
-          "expr": "patroni_replica{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}",
+          "expr": "patroni_replica{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instance\", name=~\"$node\"}",
           "legendFormat": "{{name}} replica"
         },
         {
-          "expr": "patroni_postgres_running{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}",
+          "expr": "patroni_postgres_running{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instance\", name=~\"$node\"}",
           "legendFormat": "{{name}} pg running"
         },
         {
-          "expr": "patroni_postgres_streaming{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}",
+          "expr": "patroni_postgres_streaming{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instance\", name=~\"$node\"}",
           "legendFormat": "{{name}} streaming"
         },
         {
-          "expr": "patroni_pending_restart{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}",
+          "expr": "patroni_pending_restart{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instance\", name=~\"$node\"}",
           "legendFormat": "{{name}} pending restart"
         },
         {
-          "expr": "changes(patroni_primary{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}[5m])",
+          "expr": "changes(patroni_primary{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instance\", name=~\"$node\"}[5m])",
           "legendFormat": "{{name}} role changes/5m"
         },
         {
-          "expr": "changes(patroni_postgres_timeline{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}[5m])",
+          "expr": "changes(patroni_postgres_timeline{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instance\", name=~\"$node\"}[5m])",
           "legendFormat": "{{name}} timeline changes/5m"
         }
       ],
@@ -637,15 +637,15 @@
       },
       "targets": [
         {
-          "expr": "patroni_xlog_location{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}",
+          "expr": "patroni_xlog_location{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instance\", name=~\"$node\"}",
           "legendFormat": "{{name}} location"
         },
         {
-          "expr": "patroni_xlog_replayed_location{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}",
+          "expr": "patroni_xlog_replayed_location{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instance\", name=~\"$node\"}",
           "legendFormat": "{{name}} replayed"
         },
         {
-          "expr": "patroni_xlog_received_location{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}",
+          "expr": "patroni_xlog_received_location{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instance\", name=~\"$node\"}",
           "legendFormat": "{{name}} received"
         }
       ],
@@ -670,7 +670,7 @@
       },
       "targets": [
         {
-          "expr": "max(patroni_xlog_location{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\"}) - patroni_xlog_replayed_location{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}",
+          "expr": "max(patroni_xlog_location{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instance\"}) - patroni_xlog_replayed_location{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instance\", name=~\"$node\"}",
           "legendFormat": "{{name}} lag"
         }
       ],
@@ -717,7 +717,7 @@
       },
       "targets": [
         {
-          "expr": "patroni_postgres_timeline{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}",
+          "expr": "patroni_postgres_timeline{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instance\", name=~\"$node\"}",
           "legendFormat": "{{name}}"
         }
       ],
@@ -742,7 +742,7 @@
       },
       "targets": [
         {
-          "expr": "time() - patroni_dcs_last_seen{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}",
+          "expr": "time() - patroni_dcs_last_seen{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instance\", name=~\"$node\"}",
           "legendFormat": "{{name}}"
         }
       ],
@@ -800,7 +800,7 @@
       },
       "targets": [
         {
-          "expr": "patroni_primary{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"}",
+          "expr": "patroni_primary{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instance\", name=~\"$node\"}",
           "legendFormat": "{{name}}"
         }
       ],
@@ -831,7 +831,7 @@
       },
       "targets": [
         {
-          "expr": "patroni_postmaster_start_time{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\", name=~\"$node\"} * 1000",
+          "expr": "patroni_postmaster_start_time{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instance\", name=~\"$node\"} * 1000",
           "legendFormat": "{{name}}"
         }
       ],
@@ -866,7 +866,7 @@
       },
       "targets": [
         {
-          "expr": "max(patroni_is_paused{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\"})",
+          "expr": "max(patroni_is_paused{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instance\"})",
           "legendFormat": "Paused"
         }
       ],
@@ -915,7 +915,7 @@
       },
       "targets": [
         {
-          "expr": "max(patroni_failsafe_mode_is_active{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\"})",
+          "expr": "max(patroni_failsafe_mode_is_active{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instance\"})",
           "legendFormat": "Failsafe"
         }
       ],
@@ -964,7 +964,7 @@
       },
       "targets": [
         {
-          "expr": "max(patroni_xlog_paused{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\"})",
+          "expr": "max(patroni_xlog_paused{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instance\"})",
           "legendFormat": "WAL Paused"
         }
       ],
@@ -1013,7 +1013,7 @@
       },
       "targets": [
         {
-          "expr": "count(patroni_sync_standby{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\"} == 1) or vector(0)",
+          "expr": "count(patroni_sync_standby{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instance\"} == 1) or vector(0)",
           "legendFormat": "Sync"
         }
       ],
@@ -1044,7 +1044,7 @@
       },
       "targets": [
         {
-          "expr": "count(patroni_postgres_in_archive_recovery{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instances\"} == 1) or vector(0)",
+          "expr": "count(patroni_postgres_in_archive_recovery{cluster=~\"$cluster\", environment=~\"$environment\", scope=\"$scope\", instance=~\"$instance\"} == 1) or vector(0)",
           "legendFormat": "In Recovery"
         }
       ],

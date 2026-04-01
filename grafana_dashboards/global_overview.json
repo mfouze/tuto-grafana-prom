@@ -82,7 +82,7 @@
         "y": 0
       },
       "id": 100,
-      "title": "🔎 Vue d'ensemble du Cluster",
+      "title": "Vue d'ensemble du Cluster",
       "type": "row"
     },
     {
@@ -794,7 +794,7 @@
         "y": 11
       },
       "id": 102,
-      "title": "⚖️ HAProxy",
+      "title": "HAProxy",
       "type": "row"
     },
     {
@@ -1074,7 +1074,7 @@
         "y": 17
       },
       "id": 103,
-      "title": "🔀 PgBouncer",
+      "title": "PgBouncer",
       "type": "row"
     },
     {
@@ -1269,7 +1269,7 @@
         "y": 24
       },
       "id": 104,
-      "title": "🔑 etcd",
+      "title": "etcd",
       "type": "row"
     },
     {
