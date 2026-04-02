@@ -191,6 +191,81 @@ groups:
           component: pgbouncer
         annotations:
           summary: "PgBouncer {{ $value }} clients waiting"
+
+  # ==================== NODE ====================
+  - name: node
+    rules:
+      - alert: NodeDiskAlmostFull
+        expr: (1 - node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) > 0.85
+        for: 5m
+        labels:
+          severity: warning
+          component: node
+        annotations:
+          summary: "Disk usage > 85% on {{ $labels.instance }}"
+
+      - alert: NodeDiskCritical
+        expr: (1 - node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) > 0.95
+        for: 2m
+        labels:
+          severity: critical
+          component: node
+        annotations:
+          summary: "Disk usage > 95% on {{ $labels.instance }} — risk of service crash"
+
+      - alert: NodeMemoryHigh
+        expr: (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) > 0.9
+        for: 5m
+        labels:
+          severity: warning
+          component: node
+        annotations:
+          summary: "Memory usage > 90% on {{ $labels.instance }}"
+
+      - alert: NodeMemoryCritical
+        expr: (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) > 0.95
+        for: 2m
+        labels:
+          severity: critical
+          component: node
+        annotations:
+          summary: "Memory usage > 95% on {{ $labels.instance }} — OOM killer risk"
+
+      - alert: NodeCPUHigh
+        expr: (1 - avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m]))) > 0.9
+        for: 5m
+        labels:
+          severity: warning
+          component: node
+        annotations:
+          summary: "CPU usage > 90% on {{ $labels.instance }}"
+
+      - alert: NodeDown
+        expr: up{job="node"} == 0
+        for: 30s
+        labels:
+          severity: critical
+          component: node
+        annotations:
+          summary: "Node exporter {{ $labels.instance }} is DOWN"
+
+      - alert: NodeNetworkErrors
+        expr: increase(node_network_receive_errs_total[5m]) > 0 or increase(node_network_transmit_errs_total[5m]) > 0
+        for: 5m
+        labels:
+          severity: warning
+          component: node
+        annotations:
+          summary: "Network errors detected on {{ $labels.instance }} ({{ $labels.device }})"
+
+      - alert: NodeFileDescriptorsHigh
+        expr: node_filefd_allocated / node_filefd_maximum > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          component: node
+        annotations:
+          summary: "File descriptors > 80% on {{ $labels.instance }}"
 ```
 
 ### alertmanager.yml
@@ -458,6 +533,10 @@ scrape_configs:
   - job_name: 'pgbouncer'
     static_configs:
       - targets: ['pgbouncer-exporter:9127']
+
+  - job_name: 'node'
+    static_configs:
+      - targets: ['node-exporter:9100']
 ```
 
 ## Étape 2 : Docker Compose
