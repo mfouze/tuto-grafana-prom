@@ -1,0 +1,30 @@
+# Configuration Kafka Producer pour perf tests
+# Exemple de fichier de configuration pour kafka-producer-perf-test
+
+# Serveurs Kafka
+bootstrap.servers=kafka1:9092,kafka2:9092
+
+# Configuration SASL/SSL
+security.protocol=SASL_SSL
+sasl.mechanism=PLAIN
+
+# Credentials SASL (format JAAS)
+sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username="your_username" password="your_password";
+
+# Configuration SSL (si nécessaire)
+# ssl.truststore.location=/app/certs/truststore.jks
+# ssl.truststore.password=password
+# ssl.keystore.location=/app/certs/keystore.jks
+# ssl.keystore.password=password
+
+# Compression
+compression.type=gzip
+
+# Acks
+acks=all
+
+# Batch size
+batch.size=16384
+
+# Linger
+linger.ms=10

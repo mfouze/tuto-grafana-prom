@@ -1,0 +1,24 @@
+# Configuration Kafka Consumer pour perf tests
+# Exemple de fichier de configuration pour kafka-consumer-perf-test
+
+# Serveurs Kafka
+bootstrap.servers=kafka1:9092,kafka2:9092
+
+# Configuration SASL/SSL
+security.protocol=SASL_SSL
+sasl.mechanism=PLAIN
+
+# Credentials SASL (format JAAS)
+sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username="your_username" password="your_password";
+
+# Configuration SSL (si nécessaire)
+# ssl.truststore.location=/app/certs/truststore.jks
+# ssl.truststore.password=password
+# ssl.keystore.location=/app/certs/keystore.jks
+# ssl.keystore.password=password
+
+# Groupe de consommateurs
+group.id=perf-test-group
+
+# Auto offset reset
+auto.offset.reset=earliest
