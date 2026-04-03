@@ -1,0 +1,21 @@
+namespace: {{ namespace }}
+namePrefix: akhq-{{ normalized_compact_cluster_name }}-
+commonLabels:
+  k8s-app: akhq-{{ normalized_compact_cluster_name }}
+bases:
+  - ../../../base
+resources:
+  - netpol.yml
+  - servicemonitor-akhq.yml
+patches:
+  - service-name.yml
+  - image.yml
+  - vault-secret.yml
+  - secret-env.yml
+configMapGenerator:
+  - name: application
+    files:
+      - application.yml
+  - name: env
+    envs:
+      - vars.env

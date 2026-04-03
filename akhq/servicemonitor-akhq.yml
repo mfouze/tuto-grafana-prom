@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: servicemonitor
+spec:
+  targetLabels:
+    - env
+    - akhq_cluster
+  endpoints:
+    - interval: 60s
+      port: jmx
+      scrapeTimeout: 40s
+  selector:
+    matchLabels:
+      k8s-app: {{ service_id }}-{{ normalized_compact_cluster_name }}

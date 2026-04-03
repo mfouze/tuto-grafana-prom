@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: netpol
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - ipBlock:
+            cidr: {{ provider_cidr }}
+      ports:
+        - port: 9093
+          protocol: TCP
+    - to:
+        - ipBlock:
+            cidr: {{ provider_cidr }}
+      ports:
+        - port: 2281
+          protocol: TCP

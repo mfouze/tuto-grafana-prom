@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment
+spec:
+  template:
+    spec:
+      containers:
+        - name: akhq
+          image: {% if kube_env == "production" %}{{ prod_registry_url }}{% else %}{{ dev_registry_url }}{% endif %}/{{ image_name }}:{{ image_version }}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: k8s-app
+                      operator: In
+                      values:
+                        - akhq-{{ normalized_compact_cluster_name }}
+                topologyKey: failure-domain.beta.kubernetes.io/zone
+              weight: 100

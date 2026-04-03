@@ -1,0 +1,15 @@
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: ingress
+spec:
+  rules:
+    - host: akhq-{{ normalized_compact_cluster_name }}.{{ kube_services_domain }}
+      http:
+        paths:
+          - backend:
+              serviceName: akhq-{{ normalized_compact_cluster_name }}-service
+              servicePort: 8085
+  tls:
+    - hosts:
+        -  akhq-{{ normalized_compact_cluster_name }}.{{ kube_services_domain }}

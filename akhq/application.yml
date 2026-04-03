@@ -1,0 +1,165 @@
+logger:
+  levels:
+    root: INFO
+
+micronaut:
+  application:
+    name: akhq
+  security:
+    endpoints:
+      logout:
+        enabled: true
+    session:
+      enabled: true
+    enabled: true
+    ldap:
+      default:
+        enabled: true
+        context:
+          server: 'ldaps://{{ldap.server_name}}:636'
+          managerDn: '{{ ldap_bind_user }}'
+          managerPassword: ${AKHQ_LDAP_PASSWORD}
+        search:
+          base: "OU=Utilisateurs,O=CA"
+          filter: "(|(cn={0})(userPrincipalName={0}))"
+        groups:
+          enabled: true
+          subtree: true
+          base: "OU=Applications,OU=Groupes,O=CA"
+          filter: "member={0}"
+  caches:
+    kafka-wrapper:
+      maximum-size: 0
+  server:
+    port: 8085
+akhq:
+  caches:
+    enabled: false
+  pagination:
+    page-size: 15 # number of elements per page (default : 25)
+    threads: 10 # Number of parallel threads to resolve page
+  topic-data:
+    size: 50 # max record per page (default: 50)
+    poll-timeout: 1000 # The time, in milliseconds, spent waiting in poll if data is not available in the buffer.
+  server:
+    access-log:
+      enabled: false
+  ui-options:
+    topic:
+      default-view: HIDE_INTERNAL  # default list view (ALL, HIDE_INTERNAL, HIDE_INTERNAL_STREAM, HIDE_STREAM). Overrides default
+      skip-consumer-groups: false # Skip loading consumer group information when showing topics. Overrides default
+      skip-last-record: true  # Skip loading last record date information when showing topics.  Overrides default
+    topic-data:
+      sort: NEWEST # default sort order (OLDEST, NEWEST) (default: OLDEST).  Overrides default
+  connections:
+    {{ normalized_compact_cluster_name }}:
+      properties:
+        bootstrap.servers: "{{ broker_bootstrap_ssl_url }}"
+        security.protocol: SASL_SSL
+        sasl.mechanism: PLAIN
+        sasl.jaas.config: ${AKHQ_SASL_JAAS_CONFIG}
+        ssl.truststore.location: /usr/local/share/ca-certificates/certs.truststore.jks
+        ssl.truststore.password: ${CERT_PASSWORD}
+{% if sts.schema is defined %}
+      schema-registry:
+        url: "{{ schema_url }}"
+        type: "confluent"
+        basic-auth-username: "taas.factory.{{ sts.schema.service_id }}-{{ env }}.schema"
+{% if vault_rest_schema_password is defined %}
+        basic-auth-password: ${AKHQ_SHEMA_REGISTRY_PASSWORD}
+        properties:
+          schema.registry.ssl.truststore.location: /usr/local/share/ca-certificates/certs.truststore.jks
+          schema.registry.ssl.truststore.password: ${CERT_PASSWORD}
+{% endif %}
+{% endif %}
+{% if sts.connect is defined and vaulted_rest_api_connect_password is defined %}
+      connect:
+        - name: {{ sts.connect.service_id }}
+          url: "{{ connect_url }}"
+          basic-auth-username: "kconnect"
+{% if vaulted_rest_api_connect_password is defined %}
+          basic-auth-password: ${AKHQ_KAFKA_CONNECT_PASSWORD}
+          properties:
+            schema.registry.ssl.truststore.location: /usr/local/share/ca-certificates/certs.truststore.jks
+            schema.registry.ssl.truststore.password: ${CERT_PASSWORD}
+{% endif %}
+{% endif %}
+
+  security:
+    default-group: no-roles
+    groups:
+      admin:
+        name: admin
+        roles:
+          - topic/read
+          - topic/insert
+          - topic/delete
+          - topic/config/update
+          - node/read
+          - node/config/update
+          - topic/data/read
+          - topic/data/insert
+          - topic/data/delete
+          - group/read
+          - group/delete
+          - group/offsets/update
+          - registry/read
+          - registry/insert
+          - registry/update
+          - registry/delete
+          - registry/version/delete
+          - acls/read
+          - connect/read
+          - connect/insert
+          - connect/update
+          - connect/delete
+          - connect/state/update
+      readonly:
+        name: readonly
+        roles:
+          - topic/read
+          - topic/data/read
+          - group/read
+          - registry/read
+          - node/read
+      limited:
+        name: limited
+        roles:
+          - topic/read
+          - node/read
+          - topic/data/read
+          - topic/data/insert
+          - group/read
+          - registry/read
+          - registry/insert
+          - acls/read
+          - connect/read
+          - connect/delete
+          - connect/state/update
+    ldap:
+      groups:
+        - name: "DL_NOSQL_{% if client_ou is defined %}{{ client_ou | upper }}{% else %}{{ client | upper }}{% endif %}_{{ dns_subdomain | upper }}_{{ cluster_id }}_ADMIN"
+          groups:
+            - admin
+        - name: "DL_NOSQL_{% if client_ou is defined %}{{ client_ou | upper }}{% else %}{{ client | upper }}{% endif %}_{{ dns_subdomain | upper }}_{{ cluster_id }}_USER"
+          groups:
+            - readonly
+        - name: "DL_NOSQL_{% if client_ou is defined %}{{ client_ou | upper }}{% else %}{{ client | upper }}{% endif %}_{{ dns_subdomain | upper }}_{{ cluster_id }}_SERVICE"
+          groups:
+            - readonly
+        - name: "DL_NOSQL_{% if client_ou is defined %}{{ client_ou | upper }}{% else %}{{ client | upper }}{% endif %}_{{ dns_subdomain | upper }}_{{ cluster_id }}_MEMBER"
+          groups:
+            - readonly
+{% if akhq_admin_secret is defined %}
+    basic-auth:
+      - username: admin
+        password: {{ akhq_admin_secret.stdout }}
+        groups:
+          - admin
+{% endif %}
+{% if akhq_admin_secret is defined %}
+      - username: readonly
+        password: {{ akhq_ro_secret.stdout }}
+        groups:
+          - readonly
+{% endif %}
