@@ -1,0 +1,114 @@
+groups:
+  - name: pgpool2_alerts
+    rules:
+      # CRITIQUE : Pgpool-II ne repond plus
+      - alert: PgpoolDown
+        expr: up{job="pgpool2"} == 0
+        for: 30s
+        labels:
+          severity: critical
+          component: pgpool2
+        annotations:
+          summary: "Pgpool-II exporter is down on {{ $labels.instance }}"
+          description: "L'exporter Pgpool-II ne repond plus. Pgpool-II est probablement DOWN."
+
+      # CRITIQUE : backend PostgreSQL DOWN
+      - alert: PgpoolBackendDown
+        expr: pgpool2_pool_nodes_status != 1
+        for: 1m
+        labels:
+          severity: critical
+          component: pgpool2
+        annotations:
+          summary: "Pgpool backend {{ $labels.hostname }} is DOWN (status={{ $value }})"
+          description: "Le backend {{ $labels.hostname }}:{{ $labels.port }} est en status {{ $value }} (1=up, 2=unused, 3=down)."
+
+      # CRITIQUE : pas de backend primary
+      - alert: PgpoolNoPrimary
+        expr: count(pgpool2_pool_nodes_role == 1) == 0
+        for: 30s
+        labels:
+          severity: critical
+          component: pgpool2
+        annotations:
+          summary: "Pgpool has no primary backend"
+          description: "Aucun backend n'a le role primary. Les ecritures sont impossibles."
+
+      # WARNING : lag de replication eleve (> 10 MB)
+      - alert: PgpoolReplicationDelayHigh
+        expr: pgpool2_pool_nodes_replication_delay > 10485760
+        for: 2m
+        labels:
+          severity: warning
+          component: pgpool2
+        annotations:
+          summary: "Pgpool replication delay > 10MB on {{ $labels.hostname }}"
+          description: "Le replica {{ $labels.hostname }} a {{ $value }} octets de retard."
+
+      # CRITIQUE : lag de replication critique (> 100 MB)
+      - alert: PgpoolReplicationDelayCritical
+        expr: pgpool2_pool_nodes_replication_delay > 104857600
+        for: 2m
+        labels:
+          severity: critical
+          component: pgpool2
+        annotations:
+          summary: "CRITICAL replication delay > 100MB on {{ $labels.hostname }}"
+          description: "Le replica {{ $labels.hostname }} a {{ $value }} octets de retard. Risque de donnees obsoletes en lecture."
+
+      # WARNING : connexions clients elevees (> 80% de num_init_children)
+      - alert: PgpoolConnectionsHigh
+        expr: pgpool2_frontend_used / pgpool2_frontend_total > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          component: pgpool2
+        annotations:
+          summary: "Pgpool connections > 80% capacity"
+          description: "{{ $value | humanizePercentage }} des slots clients sont utilises."
+
+      # CRITIQUE : connexions clients saturees (> 95%)
+      - alert: PgpoolConnectionsSaturated
+        expr: pgpool2_frontend_used / pgpool2_frontend_total > 0.95
+        for: 1m
+        labels:
+          severity: critical
+          component: pgpool2
+        annotations:
+          summary: "Pgpool connections > 95% — near saturation"
+          description: "Pgpool est presque sature. Les nouveaux clients seront rejetes."
+
+      # WARNING : health checks en echec
+      - alert: PgpoolHealthCheckFailing
+        expr: increase(pgpool2_health_check_stats_fail_count[5m]) > 3
+        for: 2m
+        labels:
+          severity: warning
+          component: pgpool2
+        annotations:
+          summary: "Pgpool health checks failing on {{ $labels.hostname }}"
+          description: "Plus de 3 health checks echoues en 5 minutes sur {{ $labels.hostname }}."
+
+      # WARNING : health check lent (> 5s en moyenne)
+      - alert: PgpoolHealthCheckSlow
+        expr: pgpool2_health_check_stats_average_duration > 5
+        for: 5m
+        labels:
+          severity: warning
+          component: pgpool2
+        annotations:
+          summary: "Pgpool health check slow on {{ $labels.hostname }}"
+          description: "Les health checks vers {{ $labels.hostname }} prennent en moyenne {{ $value }}s."
+
+      # WARNING : desequilibre du load balancing (un backend recoit > 90% des SELECT)
+      - alert: PgpoolLoadBalancingSkewed
+        expr: >
+          pgpool2_pool_nodes_select_cnt / ignoring(hostname, port) group_left
+          sum(pgpool2_pool_nodes_select_cnt) > 0.9
+        for: 10m
+        labels:
+          severity: warning
+          component: pgpool2
+        annotations:
+          summary: "Pgpool load balancing skewed — {{ $labels.hostname }} gets > 90% of SELECTs"
+          description: "Le backend {{ $labels.hostname }} recoit plus de 90% des lectures. Verifier les poids et l'etat des autres backends."

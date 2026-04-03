@@ -1,30 +1,99 @@
-# Configuration Kafka Producer pour perf tests
-# Exemple de fichier de configuration pour kafka-producer-perf-test
+# =============================================================================
+# Configuration Kafka Producer - Exemples
+# =============================================================================
+# Fichier de configuration pour kafka-producer-perf-test et kafka-console-producer
+# Copier vers producer.properties et adapter les valeurs
+# =============================================================================
 
-# Serveurs Kafka
-bootstrap.servers=kafka1:9092,kafka2:9092
+# ---------------------------------------------------------------------------
+# Connexion au cluster
+# ---------------------------------------------------------------------------
+bootstrap.servers=m9k-a8195-dev-kafka-paris-hml-1.sp2-hp.transactis.fr:9094,m9k-a8195-dev-kafka-paris-hml-2.sp2-hp.transactis.fr:9094,m9k-a8195-dev-kafka-paris-hml-3.sp2-hp.transactis.fr:9094
 
-# Configuration SASL/SSL
+# ---------------------------------------------------------------------------
+# Authentification SASL/SCRAM-SHA-512 (Transactis)
+# ---------------------------------------------------------------------------
 security.protocol=SASL_SSL
-sasl.mechanism=PLAIN
+sasl.mechanism=SCRAM-SHA-512
+sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required \
+  username="app-producer" \
+  password="MOT_DE_PASSE_VAULT";
 
-# Credentials SASL (format JAAS)
-sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username="your_username" password="your_password";
+# ---------------------------------------------------------------------------
+# Configuration SSL / TLS
+# ---------------------------------------------------------------------------
+# Truststore contenant le CA Transactis
+ssl.truststore.location=/app/certs/truststore.jks
+ssl.truststore.password=changeit
 
-# Configuration SSL (si nécessaire)
-# ssl.truststore.location=/app/certs/truststore.jks
-# ssl.truststore.password=password
+# Keystore client (si mTLS requis en plus de SCRAM)
 # ssl.keystore.location=/app/certs/keystore.jks
-# ssl.keystore.password=password
+# ssl.keystore.password=changeit
+# ssl.key.password=changeit
 
-# Compression
-compression.type=gzip
+# Protocole TLS minimum
+ssl.enabled.protocols=TLSv1.2,TLSv1.3
+ssl.protocol=TLSv1.3
 
-# Acks
+# Desactiver la verification du hostname (lab/test uniquement)
+# ssl.endpoint.identification.algorithm=
+
+# ---------------------------------------------------------------------------
+# Fiabilite : acks et retries
+# ---------------------------------------------------------------------------
+# acks=all : attend la confirmation de tous les ISR (plus fiable)
+# acks=1   : attend uniquement le leader (plus rapide, risque de perte)
+# acks=0   : fire-and-forget (le plus rapide, pas de garantie)
 acks=all
 
-# Batch size
+# Nombre de retries en cas d'erreur transitoire
+retries=3
+retry.backoff.ms=100
+
+# Idempotence : evite les doublons en cas de retry (requiert acks=all)
+enable.idempotence=true
+
+# Timeout d'attente pour la livraison d'un message
+delivery.timeout.ms=120000
+request.timeout.ms=30000
+
+# ---------------------------------------------------------------------------
+# Performance : batching et compression
+# ---------------------------------------------------------------------------
+# Taille du batch en bytes (16 KB par defaut)
 batch.size=16384
 
-# Linger
+# Temps d'attente avant d'envoyer un batch incomplet (ms)
+# Plus eleve = meilleur throughput, plus de latence
 linger.ms=10
+
+# Taille max du buffer memoire pour les messages en attente (32 MB)
+buffer.memory=33554432
+
+# Compression : none, gzip, snappy, lz4, zstd
+# gzip  : meilleur ratio, plus lent
+# lz4   : bon compromis ratio/vitesse
+# zstd  : excellent ratio, bonne vitesse
+# snappy: le plus rapide, ratio moyen
+compression.type=lz4
+
+# Nombre max de requetes en vol (sans reponse) par connexion
+# Avec idempotence activee, max 5
+max.in.flight.requests.per.connection=5
+
+# ---------------------------------------------------------------------------
+# Serialisation
+# ---------------------------------------------------------------------------
+key.serializer=org.apache.kafka.common.serialization.StringSerializer
+value.serializer=org.apache.kafka.common.serialization.StringSerializer
+
+# ---------------------------------------------------------------------------
+# Interceptors (monitoring Prometheus/JMX)
+# ---------------------------------------------------------------------------
+# metric.reporters=org.apache.kafka.common.metrics.JmxReporter
+# interceptor.classes=io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor
+
+# ---------------------------------------------------------------------------
+# Client ID (visible dans les logs broker et metriques)
+# ---------------------------------------------------------------------------
+client.id=perf-test-producer

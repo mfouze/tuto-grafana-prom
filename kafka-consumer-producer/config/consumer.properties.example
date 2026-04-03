@@ -1,24 +1,115 @@
-# Configuration Kafka Consumer pour perf tests
-# Exemple de fichier de configuration pour kafka-consumer-perf-test
+# =============================================================================
+# Configuration Kafka Consumer - Exemples
+# =============================================================================
+# Fichier de configuration pour kafka-consumer-perf-test et kafka-console-consumer
+# Copier vers consumer.properties et adapter les valeurs
+# =============================================================================
 
-# Serveurs Kafka
-bootstrap.servers=kafka1:9092,kafka2:9092
+# ---------------------------------------------------------------------------
+# Connexion au cluster
+# ---------------------------------------------------------------------------
+bootstrap.servers=m9k-a8195-dev-kafka-paris-hml-1.sp2-hp.transactis.fr:9094,m9k-a8195-dev-kafka-paris-hml-2.sp2-hp.transactis.fr:9094,m9k-a8195-dev-kafka-paris-hml-3.sp2-hp.transactis.fr:9094
 
-# Configuration SASL/SSL
+# ---------------------------------------------------------------------------
+# Authentification SASL/SCRAM-SHA-512 (Transactis)
+# ---------------------------------------------------------------------------
 security.protocol=SASL_SSL
-sasl.mechanism=PLAIN
+sasl.mechanism=SCRAM-SHA-512
+sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required \
+  username="app-consumer" \
+  password="MOT_DE_PASSE_VAULT";
 
-# Credentials SASL (format JAAS)
-sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username="your_username" password="your_password";
+# ---------------------------------------------------------------------------
+# Configuration SSL / TLS
+# ---------------------------------------------------------------------------
+# Truststore contenant le CA Transactis
+ssl.truststore.location=/app/certs/truststore.jks
+ssl.truststore.password=changeit
 
-# Configuration SSL (si nécessaire)
-# ssl.truststore.location=/app/certs/truststore.jks
-# ssl.truststore.password=password
+# Keystore client (si mTLS requis en plus de SCRAM)
 # ssl.keystore.location=/app/certs/keystore.jks
-# ssl.keystore.password=password
+# ssl.keystore.password=changeit
+# ssl.key.password=changeit
 
-# Groupe de consommateurs
+# Protocole TLS minimum
+ssl.enabled.protocols=TLSv1.2,TLSv1.3
+ssl.protocol=TLSv1.3
+
+# Desactiver la verification du hostname (lab/test uniquement)
+# ssl.endpoint.identification.algorithm=
+
+# ---------------------------------------------------------------------------
+# Consumer Group
+# ---------------------------------------------------------------------------
 group.id=perf-test-group
 
-# Auto offset reset
+# Instance ID pour l'assignation statique des partitions
+# Evite les rebalances quand un consumer redemarre rapidement
+# group.instance.id=consumer-instance-1
+
+# ---------------------------------------------------------------------------
+# Offset management
+# ---------------------------------------------------------------------------
+# earliest : commence au debut du topic (premiere lecture)
+# latest   : commence aux nouveaux messages uniquement
 auto.offset.reset=earliest
+
+# Auto-commit des offsets (true par defaut)
+# Mettre a false si on veut committer manuellement (plus de controle)
+enable.auto.commit=true
+auto.commit.interval.ms=5000
+
+# ---------------------------------------------------------------------------
+# Performance : fetch et polling
+# ---------------------------------------------------------------------------
+# Taille minimum de donnees a fetcher avant de repondre (1 byte par defaut)
+# Augmenter pour du throughput, baisser pour de la latence
+fetch.min.bytes=1
+
+# Temps max d'attente si fetch.min.bytes n'est pas atteint
+fetch.max.wait.ms=500
+
+# Taille max de donnees a fetcher par requete (50 MB par defaut)
+fetch.max.bytes=52428800
+
+# Taille max par partition (1 MB par defaut)
+max.partition.fetch.bytes=1048576
+
+# Nombre max de records retournes par poll()
+max.poll.records=500
+
+# Temps max entre 2 appels a poll() avant que le consumer soit considere mort
+max.poll.interval.ms=300000
+
+# ---------------------------------------------------------------------------
+# Session et heartbeat
+# ---------------------------------------------------------------------------
+# Timeout de session : si pas de heartbeat pendant ce delai, le consumer est expulse
+session.timeout.ms=45000
+
+# Frequence des heartbeats (doit etre < session.timeout.ms / 3)
+heartbeat.interval.ms=3000
+
+# ---------------------------------------------------------------------------
+# Deserialisation
+# ---------------------------------------------------------------------------
+key.deserializer=org.apache.kafka.common.serialization.StringDeserializer
+value.deserializer=org.apache.kafka.common.serialization.StringDeserializer
+
+# ---------------------------------------------------------------------------
+# Isolation level (transactions)
+# ---------------------------------------------------------------------------
+# read_uncommitted : lit tous les messages (par defaut)
+# read_committed   : ne lit que les messages commites (si le producer utilise des transactions)
+isolation.level=read_uncommitted
+
+# ---------------------------------------------------------------------------
+# Interceptors (monitoring Prometheus/JMX)
+# ---------------------------------------------------------------------------
+# metric.reporters=org.apache.kafka.common.metrics.JmxReporter
+# interceptor.classes=io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor
+
+# ---------------------------------------------------------------------------
+# Client ID (visible dans les logs broker et metriques)
+# ---------------------------------------------------------------------------
+client.id=perf-test-consumer
